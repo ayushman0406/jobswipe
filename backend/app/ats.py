@@ -55,13 +55,15 @@ def strip_latex_formatting(text: str) -> str:
         return ""
     text = re.sub(r"(?<!\\)%.*$", "", text, flags=re.M)
     text = re.sub(r"\\href\{[^}]*\}\{([^}]*)\}", r"\1", text)
+    while re.search(r"\\(?:textbf|textit|emph|textsc|underline)\{([^}]*)\}", text):
+        text = re.sub(r"\\(?:textbf|textit|emph|textsc|underline)\{([^}]*)\}", r"\1", text)
     text = re.sub(r"\\[a-zA-Z]+\{([^}]*)\}", r"\1", text)
     text = re.sub(
         r"\\(?:vspace|hspace|geometry|documentclass|usepackage|titleformat|titlespacing|pagestyle|hypersetup)\*?(?:\[[^\]]*\])?\{[^}]*\}",
         "",
         text,
     )
-    text = re.sub(r"\\(?:begin|end)\{[^}]*\}(?:\[[^\]]*\])?", "", text)
+    text = re.sub(r"\\(?:begin|end)\*?(?:\[[^\]]*\])?(?:\{[^}]*\}?)?", "", text)
     text = re.sub(r"\\(?:hfill|titlerule|centering|large|LARGE|Huge|bfseries|uppercase|small|normalsize)", "", text)
     text = text.replace(r"\\", "\n")
     return latex_unescape(text).strip()
@@ -268,6 +270,19 @@ def parse_latex_resume(tex: str) -> dict:
                 clean_itm = strip_latex_formatting(itm)
                 if clean_itm:
                     result["certifications"].append({"name": clean_itm})
+
+    # Fallback for unsectioned or malformed snippets containing items
+    if not result["roles"] and "\\item" in tex:
+        raw_items = re.findall(r"\\item\s*(.+?)(?=\\item|\n\s*\\end|\Z)", tex, flags=re.S)
+        items = [strip_latex_formatting(h) for h in raw_items if strip_latex_formatting(h)]
+        if items:
+            b_m = re.search(r"\\textbf\{([^}]+)\}", tex)
+            title = strip_latex_formatting(b_m.group(1)).strip() if b_m else "Experience"
+            result["roles"].append({
+                "title": title,
+                "company": "",
+                "highlights": items,
+            })
 
     return result
 
@@ -815,7 +830,7 @@ def _fallback_improve_resume(user_message: str, current_latex: str, resume_dict:
     # 1. Quantifiable metrics enhancement
     if any(k in msg for k in ("metric", "quantif", "number", "%", "percent", "impact", "bullet", "result")):
         def enrich_item(match):
-            item_text = match.group(1)
+            item_text = match.group(1).strip()
             if re.search(r"\d+%|\$\d+|\b\d+\b", item_text):
                 return match.group(0)
             metric_enhancements = [
@@ -824,11 +839,11 @@ def _fallback_improve_resume(user_message: str, current_latex: str, resume_dict:
                 ", cutting compute resource costs by 22\\% through optimization.",
                 ", improving end-user response times by 40\\% (sub-80ms p95 latency).",
             ]
-            enhancement = metric_enhancements[hash(item_text) % len(metric_enhancements)]
+            enhancement = metric_enhancements[abs(hash(item_text)) % len(metric_enhancements)]
             clean_item = item_text.rstrip(". ") + enhancement
             return f"\\item {clean_item}"
 
-        new_tex = re.sub(r"\\item\s+([^\n\\]+)", enrich_item, tex)
+        new_tex = re.sub(r"\\item\s*(.+?)(?=(?:\\item|\n\s*\\end|\Z))", enrich_item, tex, flags=re.S)
         if new_tex != tex:
             tex = new_tex
             changes_made.append("Added quantifiable metrics (throughput %, latency reduction, cost savings) to role bullet points.")
@@ -836,12 +851,14 @@ def _fallback_improve_resume(user_message: str, current_latex: str, resume_dict:
     # 2. Add technical skills / tools keywords
     if any(k in msg for k in ("skill", "keyword", "tech", "tool", "framework", "cloud", "language")):
         high_demand_skills = ["Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis", "CI/CD", "REST APIs", "Microservices"]
-        if r"\section*{TECHNICAL \& DOMAIN SKILLS}" in tex:
+        sm = re.search(r"(\\section\*?\{[^}]*(?:SKILL|COMPETENC)[^}]*\})", tex, flags=re.I)
+        if sm:
             for skill in high_demand_skills:
                 if skill.lower() not in tex.lower():
+                    header_str = sm.group(1)
                     tex = tex.replace(
-                        r"\section*{TECHNICAL \& DOMAIN SKILLS}",
-                        f"\\section*{{TECHNICAL \\& DOMAIN SKILLS}}\n\\textbf{{Core Modern Stack:}} {', '.join(high_demand_skills[:4])} \\\\"
+                        header_str,
+                        f"{header_str}\n\\textbf{{Core Modern Stack:}} {', '.join(high_demand_skills[:4])} \\\\"
                     )
                     changes_made.append(f"Injected high-demand industry skill keywords ({', '.join(high_demand_skills[:4])}).")
                     break
@@ -855,8 +872,14 @@ def _fallback_improve_resume(user_message: str, current_latex: str, resume_dict:
             f"\n\\vspace{{6pt}}"
         )
         if r"\section*{PROFESSIONAL SUMMARY}" not in tex:
-            tex = tex.replace(r"\begin{document}", f"\\begin{{document}}\n\n{new_summary}")
-            changes_made.append("Added punchy 3-sentence executive summary highlighting technical leadership and ATS keywords.")
+            header_end = re.search(r"\\end\{center\}\s*(?:\\vspace\{[^}]*\})?", tex)
+            if header_end:
+                insert_pos = header_end.end()
+                tex = tex[:insert_pos] + "\n\n" + new_summary + tex[insert_pos:]
+                changes_made.append("Added punchy 3-sentence executive summary highlighting technical leadership and ATS keywords.")
+            elif r"\begin{document}" in tex:
+                tex = tex.replace(r"\begin{document}", f"\\begin{{document}}\n\n{new_summary}")
+                changes_made.append("Added punchy 3-sentence executive summary highlighting technical leadership and ATS keywords.")
 
     if not changes_made:
         changes_made.append("Applied ATS single-column formatting standards and verified character escaping.")

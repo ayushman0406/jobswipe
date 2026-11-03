@@ -722,6 +722,8 @@ nav.main-nav {
 .chat-bubble.user {
   background: var(--ink);
   color: #fffdf8;
+  align-self: flex-end;
+}
 .bubble-text { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .chat-bubble.error-bubble { border-color: #fda4af; background: #fff1f2; color: #9f1239; }
 .retry-chat-btn {
@@ -738,6 +740,7 @@ nav.main-nav {
   transition: transform 120ms var(--ease-out);
 }
 .retry-chat-btn:active { transform: scale(0.96); }
+.changes-box {
   background: #edf8f0;
   border: 1px solid #cce8d4;
   border-radius: 10px;

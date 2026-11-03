@@ -209,6 +209,7 @@ export default function App() {
       const next = {
         ...user,
         has_resume: true,
+        resume: res.resume,
         resume_json: res.resume,
         ats_score: res.ats,
         resume_latex: res.latex,

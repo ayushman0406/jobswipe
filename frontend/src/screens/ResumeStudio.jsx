@@ -24,6 +24,9 @@ function parseClientLatex(tex) {
       if (!s) return "";
       let text = s.replace(/(?<!\\)%.*$/gm, "");
       text = text.replace(/\\href\{[^}]*\}\{([^}]*)\}/g, "$1");
+      while (/\\(?:textbf|textit|emph|textsc|underline)\{([^}]*)\}/.test(text)) {
+        text = text.replace(/\\(?:textbf|textit|emph|textsc|underline)\{([^}]*)\}/g, "$1");
+      }
       text = text.replace(/\\[a-zA-Z]+\{([^}]*)\}/g, "$1");
       text = text.replace(/\\[a-zA-Z]+\*?(?:\[[^\]]*\])?(?:\{[^}]*\})?/g, "");
       text = text.replace(/\\\\/g, "\n");
@@ -79,13 +82,15 @@ function parseClientLatex(tex) {
       if (/SUMMARY|PROFILE|OBJECTIVE/.test(title)) {
         result.summary = strip(content);
       } else if (/SKILL|COMPETENC/.test(title)) {
-        const cleaned = strip(content);
         const items = [];
-        const junk = new Set(["document", "article", "center", "itemize", "enumerate"]);
-        cleaned.split("\n").forEach((line) => {
-          const parts = line.split(/[:\-]/);
-          const chunk = parts[parts.length - 1];
-          chunk.split(/[,•|;]+/).forEach((token) => {
+        const junk = new Set(["document", "article", "center", "itemize", "enumerate", "skills", "technical"]);
+        const lines = content.split(/\\\\|\n|\\item/);
+        lines.forEach((l) => {
+          const stripped = strip(l);
+          if (!stripped) return;
+          const colonIdx = stripped.indexOf(":");
+          const textToParse = colonIdx !== -1 ? stripped.slice(colonIdx + 1) : stripped;
+          textToParse.split(/[,•|;]+/).forEach((token) => {
             const t = token.trim();
             if (t && !junk.has(t.toLowerCase()) && !/^\d+pt$/.test(t) && t.length > 1) {
               items.push(t);
@@ -97,7 +102,7 @@ function parseClientLatex(tex) {
         const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^{}\n]+\}\s*(?:\$\|\$|\||--|,|\bat\b|\\hfill|\\\\))/);
         blocks.forEach((b) => {
           if (!b.trim() || b.trim().startsWith("%")) return;
-          const rawItems = [...b.matchAll(/\\item\s+([\s\S]+?)(?=(?:\\item|\n\s*\\end|\Z|\$))/g)];
+          const rawItems = [...b.matchAll(/\\item\s*([\s\S]+?)(?=(?:\\item|\n\s*\\end|$))/g)];
           const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
 
           let tc = b.match(/\\textbf\{([^}]+)\}\s*(?:\$\|\$|\||--|,|\bat\b|\\hfill)\s*\\textit\{([^}]+)\}(?:\s*\\hfill\s*(?:\\textit\{([^}]+)\}|([^\n\\]+)))?/);
@@ -136,7 +141,7 @@ function parseClientLatex(tex) {
         blocks.forEach((b) => {
           if (!b.trim() || b.trim().startsWith("%")) return;
           const pm = b.match(/\\textbf\{([^}]+)\}/);
-          const rawItems = [...b.matchAll(/\\item\s+([\s\S]+?)(?=(?:\\item|\n\s*\\end|\Z|\$))/g)];
+          const rawItems = [...b.matchAll(/\\item\s*([\s\S]+?)(?=(?:\\item|\n\s*\\end|$))/g)];
           const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
           if (pm) {
             result.projects.push({
@@ -169,9 +174,23 @@ function parseClientLatex(tex) {
           }
         });
       } else if (/CERTIFICATION|ACHIEVEMENT/.test(title)) {
-        const rawItems = [...content.matchAll(/\\item\s+([\s\S]+?)(?=(?:\\item|\n\s*\\end|\Z|\$))/g)];
+        const rawItems = [...content.matchAll(/\\item\s*([\s\S]+?)(?=(?:\\item|\n\s*\\end|$))/g)];
         const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
         itemMatches.forEach((itm) => result.certifications.push({ name: itm }));
+      }
+    }
+
+    if (result.roles.length === 0 && tex.includes("\\item")) {
+      const rawItems = [...tex.matchAll(/\\item\s*([\s\S]+?)(?=(?:\\item|\n\s*\\end|$))/g)];
+      const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
+      if (itemMatches.length > 0) {
+        const bm = tex.match(/\\textbf\{([^}]+)\}/);
+        result.roles.push({
+          title: bm ? strip(bm[1]) : "Experience",
+          company: "",
+          start: "",
+          highlights: itemMatches,
+        });
       }
     }
 

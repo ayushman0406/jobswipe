@@ -297,6 +297,57 @@ Senior Backend Architect and Distributed Systems Lead with 7+ years of deep expe
             self.assertIsNone(data.get("coach_error"))
 
 
+    def test_fallback_improve_resume_bullet_formatting_and_header_position(self):
+        from app.ats import _fallback_improve_resume
+
+        tex = r"""\documentclass{article}\begin{document}
+\begin{center}{\LARGE \textbf{Bob Builder}}\\[3pt]bob@test.com\end{center}
+\section*{WORK EXPERIENCE}
+\textbf{Staff Engineer} $|$ \textit{Construct Inc}
+\begin{itemize}
+    \item \textbf{Led} backend infrastructure for payment pipeline
+\end{itemize}
+\end{document}"""
+
+        res = _fallback_improve_resume("Add quantifiable metrics to my bullets", tex, {})
+        # Should enrich the item despite \textbf
+        self.assertIn("\\%", res["latex"])
+        self.assertIn("\\textbf{Led} backend infrastructure for payment pipeline,", res["latex"])
+
+        # Test executive summary insertion position
+        sum_res = _fallback_improve_resume("Refine executive summary", tex, {})
+        header_idx = sum_res["latex"].index(r"\begin{center}")
+        summary_idx = sum_res["latex"].index(r"\section*{PROFESSIONAL SUMMARY}")
+        self.assertGreater(summary_idx, header_idx, "Summary must be placed after candidate header")
+
+    def test_parse_and_score_malformed_latex(self):
+        from app.ats import parse_latex_resume, calculate_ats_score
+
+        malformed = r"""\begin{document} \textbf{Unclosed itemize \begin{itemize} \item \textbf{\textit{Deeply nested}} item
+        % unescaped comment % and raw %
+        \item Another item without closing env"""
+        parsed = parse_latex_resume(malformed)
+        self.assertIsInstance(parsed, dict)
+        self.assertEqual(parsed["roles"][0]["title"], "Unclosed itemize")
+        self.assertTrue(len(parsed["roles"][0]["highlights"]) >= 1)
+
+        ats = calculate_ats_score(parsed, latex=malformed)
+        self.assertIsInstance(ats["overall_score"], int)
+        self.assertIn("breakdown", ats)
+
+    def test_fallback_skills_injection_any_header(self):
+        from app.ats import _fallback_improve_resume
+
+        custom_tex = r"""\documentclass{article}\begin{document}
+\begin{center}{\LARGE \textbf{Maya}}\end{center}
+\section*{Skills}
+Python, JavaScript
+\end{document}"""
+        res = _fallback_improve_resume("Add technical skills and tools", custom_tex, {})
+        self.assertIn("Core Modern Stack:", res["latex"])
+        self.assertIn("Docker", res["latex"])
+
+
 if __name__ == "__main__":
     unittest.main()
 

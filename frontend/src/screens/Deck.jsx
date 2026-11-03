@@ -7,6 +7,7 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
   const [whyFor, setWhyFor] = useState(null);
   const [whyError, setWhyError] = useState("");
   const [whyBusy, setWhyBusy] = useState(false);
+  const [swipeCmd, setSwipeCmd] = useState(null);
 
   async function openWhy(job) {
     setWhyFor(job);
@@ -20,6 +21,11 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
     } finally {
       setWhyBusy(false);
     }
+  }
+
+  function handleActionClick(action) {
+    if (busy || !top || swipeCmd) return;
+    setSwipeCmd({ action, id: top.job_id });
   }
 
   const top = cards[0];
@@ -53,7 +59,11 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
             active={i === 0 && !busy}
             meta={meta}
             t={t}
-            onGone={(action) => onSwipe(action)}
+            programmaticAction={i === 0 && swipeCmd?.id === job.job_id ? swipeCmd.action : null}
+            onGone={(action) => {
+              setSwipeCmd(null);
+              onSwipe(action);
+            }}
             onWhy={() => openWhy(job)}
           />
         ))}
@@ -63,8 +73,8 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
           <button
             type="button"
             className="act pass"
-            onClick={() => onSwipe("pass")}
-            disabled={busy}
+            onClick={() => handleActionClick("pass")}
+            disabled={busy || Boolean(swipeCmd)}
             aria-label={t.pass}
           >
             <span className="act-icon">✕</span>
@@ -73,8 +83,8 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
           <button
             type="button"
             className="act super"
-            onClick={() => onSwipe("superlike")}
-            disabled={busy}
+            onClick={() => handleActionClick("superlike")}
+            disabled={busy || Boolean(swipeCmd)}
             aria-label={t.super}
           >
             <span className="act-icon">★</span>
@@ -83,8 +93,8 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
           <button
             type="button"
             className="act like"
-            onClick={() => onSwipe("like")}
-            disabled={busy}
+            onClick={() => handleActionClick("like")}
+            disabled={busy || Boolean(swipeCmd)}
             aria-label={t.like}
           >
             <span className="act-icon">♥</span>
@@ -167,7 +177,7 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
   );
 }
 
-function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
+function SwipeCard({ job, index, active, meta, t, programmaticAction, onGone, onWhy }) {
   const drag = useRef(null);
   const gone = useRef(false);
   const [pos, setPos] = useState({ x: 0, y: 0, fly: false, resetting: false });
@@ -184,6 +194,12 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [active, job.job_id]);
+
+  useEffect(() => {
+    if (programmaticAction && active) {
+      fly(programmaticAction);
+    }
+  }, [programmaticAction, active]);
 
   function fly(action) {
     if (gone.current) return;
@@ -228,12 +244,12 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
     const velY = Math.abs(y) / timeTaken;
     drag.current = null;
 
-    // Velocity-based flick or distance thresholds
-    if ((y < -110 || (y < -50 && velY > 0.45)) && Math.abs(x) < 90) {
+    // Velocity-based flick (>0.22 px/ms) or distance thresholds
+    if ((y < -110 || (y < -50 && velY > 0.22)) && Math.abs(x) < 90) {
       fly("superlike");
-    } else if (x > 110 || (x > 45 && velX > 0.45)) {
+    } else if (x > 110 || (x > 45 && velX > 0.22)) {
       fly("like");
-    } else if (x < -110 || (x < -45 && velX > 0.45)) {
+    } else if (x < -110 || (x < -45 && velX > 0.22)) {
       fly("pass");
     } else {
       // Responsive spring return

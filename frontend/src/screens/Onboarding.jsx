@@ -76,11 +76,26 @@ export default function Onboarding({ meta, onDone }) {
         <div className="form animate-fade-in" key="step-0">
           <label>
             {t.name}
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Himanshu" autoFocus />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && name.trim()) setStep(1);
+              }}
+              placeholder="Himanshu"
+              autoFocus
+            />
           </label>
           <label>
             {t.email}
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && name.trim()) setStep(1);
+              }}
+              placeholder="you@email.com"
+            />
           </label>
           <label>
             {t.lang}
