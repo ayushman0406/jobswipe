@@ -26,12 +26,29 @@ export default function Onboarding({ meta, onDone }) {
     setError("");
     try {
       const user = await api.createUser({ name: name.trim(), email: email.trim(), preferred_lang: lang });
-      if (file) await api.uploadResume(user.id, file);
+      let atsResult = null;
+      let resumeData = null;
+      if (file) {
+        const uploadRes = await api.uploadResume(user.id, file);
+        atsResult = uploadRes.ats;
+        resumeData = uploadRes.resume;
+      }
       const body = {};
       if (cats.length) body.categories = cats;
       if (city) body.locations = [city];
       const deck = await api.browse(user.id, body);
-      onDone({ ...user, has_resume: Boolean(file), search_state: deck.state }, deck.cards, deck.state);
+      onDone(
+        {
+          ...user,
+          has_resume: Boolean(file),
+          ats_score: atsResult,
+          resume: resumeData || user.resume,
+          search_state: deck.state,
+        },
+        deck.cards,
+        deck.state,
+        atsResult
+      );
     } catch (e) {
       setError(e.message);
     } finally {

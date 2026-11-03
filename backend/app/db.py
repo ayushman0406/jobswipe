@@ -14,6 +14,14 @@ _JOB_COLUMNS = {
     "languages": "JSON",
     "benefits": "JSON",
     "openings": "INTEGER DEFAULT 1",
+    "photo_url": "VARCHAR DEFAULT ''",
+    "company_logo": "VARCHAR DEFAULT ''",
+    "hiring_quote": "VARCHAR DEFAULT ''",
+}
+
+_USER_COLUMNS = {
+    "ats_score": "JSON",
+    "resume_latex": "TEXT",
 }
 
 
@@ -23,13 +31,22 @@ def init_db():
     if engine.dialect.name != "sqlite":
         return
     insp = inspect(engine)
-    if not insp.has_table("job"):
-        return
-    have = {c["name"] for c in insp.get_columns("job")}
-    with engine.begin() as conn:
-        for name, ddl in _JOB_COLUMNS.items():
-            if name not in have:
-                conn.execute(text(f"ALTER TABLE job ADD COLUMN {name} {ddl}"))
+
+    # Migrate job columns
+    if insp.has_table("job"):
+        have_job = {c["name"] for c in insp.get_columns("job")}
+        with engine.begin() as conn:
+            for name, ddl in _JOB_COLUMNS.items():
+                if name not in have_job:
+                    conn.execute(text(f"ALTER TABLE job ADD COLUMN {name} {ddl}"))
+
+    # Migrate user columns
+    if insp.has_table("user"):
+        have_user = {c["name"] for c in insp.get_columns("user")}
+        with engine.begin() as conn:
+            for name, ddl in _USER_COLUMNS.items():
+                if name not in have_user:
+                    conn.execute(text(f"ALTER TABLE user ADD COLUMN {name} {ddl}"))
 
 
 def get_session():

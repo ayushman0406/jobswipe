@@ -1,7 +1,7 @@
-from datetime import datetime , timezone
+from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import JSON, Column, LargeBinary, UniqueConstraint
+from sqlalchemy import JSON, Column, LargeBinary, Text, UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -11,6 +11,8 @@ class User(SQLModel, table=True):
     email: str = ""
     preferred_lang: str = "en"  # en | hi | kn
     resume_json: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    ats_score: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    resume_latex: Optional[str] = Field(default=None, sa_column=Column(Text))
     # {"filters": {...}, "focus": "english description"}
     search_state: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     resume_vec: Optional[bytes] = Field(default=None, sa_column=Column(LargeBinary))
@@ -42,6 +44,9 @@ class Job(SQLModel, table=True):
     benefits: list = Field(default_factory=list, sa_column=Column(JSON))
     openings: int = 1
     status: str = "open"
+    photo_url: Optional[str] = None
+    company_logo: Optional[str] = None
+    hiring_quote: Optional[str] = None
     vec: Optional[bytes] = Field(default=None, sa_column=Column(LargeBinary))
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

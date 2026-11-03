@@ -33,7 +33,18 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
             {meta && meta.jobs === 0 && <p>{t.unseeded}</p>}
           </div>
         )}
-        {busy && cards.length === 0 && <div className="empty card-face">{t.loading}</div>}
+        {busy && cards.length === 0 && (
+          <div className="empty card-face skeleton-face">
+            <div className="skel-banner shimmer" />
+            <div className="skel-body">
+              <div className="skel-line w80 shimmer" />
+              <div className="skel-line w50 shimmer" />
+              <div className="skel-line w100 shimmer" />
+              <div className="skel-line w70 shimmer" />
+            </div>
+            <p className="loading-hint">{t.loading}</p>
+          </div>
+        )}
         {cards.slice(0, 3).map((job, i) => (
           <SwipeCard
             key={job.job_id}
@@ -49,14 +60,35 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
       </div>
       {top && (
         <div className="actions">
-          <button type="button" className="act pass" onClick={() => onSwipe("pass")} disabled={busy}>
-            {t.pass}
+          <button
+            type="button"
+            className="act pass"
+            onClick={() => onSwipe("pass")}
+            disabled={busy}
+            aria-label={t.pass}
+          >
+            <span className="act-icon">✕</span>
+            <span>{t.pass}</span>
           </button>
-          <button type="button" className="act super" onClick={() => onSwipe("superlike")} disabled={busy}>
-            {t.super}
+          <button
+            type="button"
+            className="act super"
+            onClick={() => onSwipe("superlike")}
+            disabled={busy}
+            aria-label={t.super}
+          >
+            <span className="act-icon">★</span>
+            <span>{t.super}</span>
           </button>
-          <button type="button" className="act like" onClick={() => onSwipe("like")} disabled={busy}>
-            {t.like}
+          <button
+            type="button"
+            className="act like"
+            onClick={() => onSwipe("like")}
+            disabled={busy}
+            aria-label={t.like}
+          >
+            <span className="act-icon">♥</span>
+            <span>{t.like}</span>
           </button>
         </div>
       )}
@@ -64,12 +96,18 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
         <div className="sheet-back" onClick={() => setWhyFor(null)}>
           <div className="sheet" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-top">
-              <h3>{whyFor.title}</h3>
+              <div>
+                <span className="pill-small" style={{ "--cat": CAT_COLOR[whyFor.category] || "#444" }}>
+                  {catLabel(meta, whyFor.category)}
+                </span>
+                <h3>{whyFor.title}</h3>
+                <p className="company">{whyFor.company}</p>
+              </div>
               <button type="button" className="ghost" onClick={() => setWhyFor(null)}>
                 {t.close}
               </button>
             </div>
-            {whyBusy && <p className="muted">{t.loading}</p>}
+            {whyBusy && <p className="muted loading-pulsar">{t.loading}</p>}
             {whyError && <p className="error">{whyError}</p>}
             {why?.coach_error && <p className="muted">{why.coach_error}</p>}
             {why && (
@@ -84,13 +122,15 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
                 {why.tip && <p className="tip">{why.tip}</p>}
                 <p className="kicker">{t.fits}</p>
                 <div className="chips">
-                  {(why.matched_skills || []).length
-                    ? why.matched_skills.map((s) => (
-                        <span key={s} className="chip good">
-                          {s}
-                        </span>
-                      ))
-                    : <span className="muted">—</span>}
+                  {(why.matched_skills || []).length ? (
+                    why.matched_skills.map((s) => (
+                      <span key={s} className="chip good">
+                        {s}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="muted">—</span>
+                  )}
                 </div>
                 <p className="kicker">{t.missing}</p>
                 <div className="chips">
@@ -136,7 +176,7 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
     const x = action === "pass" ? -560 : action === "like" ? 560 : 0;
     const y = action === "superlike" ? -640 : 30;
     setPos({ x, y, fly: true });
-    window.setTimeout(() => onGone(action), 200);
+    window.setTimeout(() => onGone(action), 220);
   }
 
   function down(e) {
@@ -181,15 +221,58 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
       onPointerUp={up}
       onPointerCancel={up}
     >
-      <header className="card-top">
-        <span className="pill">{catLabel(meta, job.category)}</span>
-        <span className="match">{job.match_pct}%</span>
-      </header>
-      <h2>{job.title}</h2>
-      <p className="company">{job.company}</p>
+      {/* 1. Curated photo banner & hiring overlay */}
+      <div className="card-photo-banner">
+        <img
+          src={job.photo_url || "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80"}
+          alt={job.title}
+          className="card-photo"
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src = "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80";
+          }}
+        />
+        <div className="photo-scrim" />
+        <div className="photo-badge">✨ {t.weAreHiring}</div>
+        <div className="photo-match-badge">{job.match_pct}% match</div>
+      </div>
+
+      {/* 2. Company Identity & Monogram */}
+      <div className="company-invite-row">
+        <img
+          src={job.company_logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company || "Co")}&background=1c1612&color=fffdf8&bold=true&size=128`}
+          alt={job.company}
+          className="company-logo"
+        />
+        <div className="company-details">
+          <div className="company-name-row">
+            <span className="company-name">{job.company}</span>
+            <span className="verified-badge" title="Verified Company">✓</span>
+          </div>
+          <span className="pill-small" style={{ "--cat": color }}>
+            {catLabel(meta, job.category)}
+          </span>
+        </div>
+      </div>
+
+      {/* 3. Company hiring invitation quote */}
+      {job.hiring_quote && (
+        <div className="hiring-callout">
+          <span className="hiring-icon">👋</span>
+          <p className="hiring-text">“{job.hiring_quote}”</p>
+        </div>
+      )}
+
+      {/* 4. Role Title & Compensation */}
+      <h2 className="job-title">{job.title}</h2>
       <p className="salary">{salary(job)}</p>
+
+      {/* 5. Key Facts Tags */}
       <ul className="facts">
-        <li>{job.location}{job.remote ? " · remote" : ""}</li>
+        <li>
+          {job.location}
+          {job.remote ? " · remote" : ""}
+        </li>
         {job.shift && <li>{job.shift}</li>}
         <li>{job.employment_type}</li>
         {job.education && <li>{job.education}</li>}
@@ -198,7 +281,11 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
         </li>
         {job.industry && <li>{job.industry}</li>}
       </ul>
+
+      {/* 6. Description */}
       <p className="desc">{job.description}</p>
+
+      {/* 7. Skills Chips */}
       <div className="chips">
         {(job.skills || []).slice(0, 6).map((s) => (
           <span key={s} className={job.matched_skills?.includes(s) ? "chip good" : "chip"}>
@@ -206,12 +293,12 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
           </span>
         ))}
       </div>
-      {(job.benefits || []).length > 0 && (
-        <p className="benefits">{job.benefits.join(" · ")}</p>
-      )}
-      {(job.languages || []).length > 0 && (
-        <p className="langs">{job.languages.join(" · ")}</p>
-      )}
+
+      {/* 8. Benefits & Languages */}
+      {(job.benefits || []).length > 0 && <p className="benefits">{job.benefits.join(" · ")}</p>}
+      {(job.languages || []).length > 0 && <p className="langs">{job.languages.join(" · ")}</p>}
+
+      {/* 9. Why fit button */}
       <button
         type="button"
         className="why"
@@ -223,8 +310,15 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
       >
         {t.why}
       </button>
+
+      {/* 10. Stamp feedback on drag */}
       {index === 0 && Math.abs(pos.x) > 40 && (
-        <span className={pos.x > 0 ? "stamp like" : "stamp pass"}>{pos.x > 0 ? t.like : t.pass}</span>
+        <span className={pos.x > 0 ? "stamp like" : "stamp pass"}>
+          {pos.x > 0 ? t.like : t.pass}
+        </span>
+      )}
+      {index === 0 && pos.y < -50 && Math.abs(pos.x) <= 40 && (
+        <span className="stamp super">{t.super}</span>
       )}
     </article>
   );

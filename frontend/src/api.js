@@ -57,4 +57,16 @@ export const api = {
   resetSearch: (id) => req(`/users/${id}/search`, { method: "DELETE" }),
   matches: (id) => req(`/users/${id}/matches`),
   accept: (mid) => req(`/dev/matches/${mid}/provider-accept`, { method: "POST" }),
+  getAts: (id) => req(`/users/${id}/resume/ats`),
+  updateLatex: (id, latex) =>
+    req(`/users/${id}/resume/latex`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ latex }),
+    }),
+  improveResumeChat: (id, message, currentLatex, chatHistory = []) =>
+    req(
+      `/users/${id}/resume/improve-chat`,
+      json({ message, current_latex: currentLatex, chat_history: chatHistory })
+    ),
 };

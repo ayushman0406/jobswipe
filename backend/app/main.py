@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
-from . import agent, matching, postmatch, voice
+from . import agent, ats as ats_mod, matching, postmatch, voice
 from . import resume as resume_mod
 from .catalog import CATEGORIES, CATEGORY_SLUGS, EMPLOYMENT_TYPES, SHIFTS, focus_for
 from .config import settings
@@ -87,12 +87,27 @@ def _user_out(u: User) -> dict:
     return {
         "id": u.id, "name": u.name, "email": u.email, "preferred_lang": u.preferred_lang,
         "has_resume": bool(u.resume_json),
+        "ats_score": u.ats_score,
+        "has_latex": bool(u.resume_latex),
         "search_state": u.search_state or {"filters": {}, "focus": ""},
         "resume": {
             "name": resume.get("name"),
+            "email": resume.get("email"),
+            "phone": resume.get("phone"),
+            "location": resume.get("location"),
+            "summary": resume.get("summary"),
+            "links": resume.get("links") or {},
             "desired_roles": resume.get("desired_roles") or [],
             "domains": resume.get("domains") or [],
             "total_experience_years": resume.get("total_experience_years"),
+            "skills": resume.get("skills") or [],
+            "categorized_skills": resume.get("categorized_skills") or {},
+            "roles": resume.get("roles") or [],
+            "education": resume.get("education") or [],
+            "projects": resume.get("projects") or [],
+            "certifications": resume.get("certifications") or [],
+            "achievements": resume.get("achievements") or [],
+            "languages": resume.get("languages") or [],
         },
     }
 
@@ -119,9 +134,62 @@ def upload_resume(uid: int, file: UploadFile = File(...), s: Session = Depends(g
     except ValueError as e:
         raise HTTPException(422, str(e))
     vec = to_bytes(embed([resume_mod.resume_to_text(r)])[0])
-    u.resume_json, u.resume_vec, u.pref_vec = r, vec, vec
+    latex = ats_mod.generate_latex_resume(r)
+    ats_score = ats_mod.calculate_ats_score(r, latex)
+    u.resume_json = r
+    u.resume_vec = vec
+    u.pref_vec = vec
+    u.ats_score = ats_score
+    u.resume_latex = latex
     s.add(u); s.commit()
-    return r
+    return {"resume": r, "ats": ats_score, "latex": latex}
+
+
+@app.get("/users/{uid}/resume/ats")
+def get_resume_ats(uid: int, s: Session = Depends(get_session)):
+    u = _user(s, uid)
+    if not u.resume_json:
+        raise HTTPException(404, "No resume uploaded yet")
+    if not u.ats_score or not u.resume_latex:
+        latex = u.resume_latex or ats_mod.generate_latex_resume(u.resume_json)
+        score = ats_mod.calculate_ats_score(u.resume_json, latex)
+        u.resume_latex = latex
+        u.ats_score = score
+        s.add(u); s.commit()
+    return {"ats": u.ats_score, "latex": u.resume_latex}
+
+
+class LatexIn(BaseModel):
+    latex: str
+
+
+@app.put("/users/{uid}/resume/latex")
+def update_resume_latex(uid: int, body: LatexIn, s: Session = Depends(get_session)):
+    u = _user(s, uid)
+    u.resume_latex = body.latex
+    u.ats_score = ats_mod.calculate_ats_score(u.resume_json or {}, body.latex)
+    s.add(u); s.commit()
+    return {"ok": True, "ats": u.ats_score, "latex": u.resume_latex}
+
+
+class ResumeChatIn(BaseModel):
+    message: str
+    chat_history: list = []
+    current_latex: Optional[str] = None
+
+
+@app.post("/users/{uid}/resume/improve-chat")
+def improve_resume_chat(uid: int, body: ResumeChatIn, s: Session = Depends(get_session)):
+    u = _user(s, uid)
+    latex = body.current_latex or u.resume_latex or ats_mod.generate_latex_resume(u.resume_json or {})
+    result = ats_mod.chat_improve_resume(body.message, latex, u.resume_json or {}, body.chat_history)
+    u.resume_latex = result["latex"]
+    new_ats = ats_mod.calculate_ats_score(u.resume_json or {}, result["latex"])
+    if result.get("estimated_score") and result["estimated_score"] > new_ats["overall_score"]:
+        new_ats["overall_score"] = min(100, max(new_ats["overall_score"], int(result["estimated_score"])))
+    u.ats_score = new_ats
+    s.add(u); s.commit()
+    return {**result, "ats": new_ats}
 
 
 def _can_rank(u: User) -> bool:
@@ -318,6 +386,9 @@ class JobIn(BaseModel):
     languages: list[str] = []
     benefits: list[str] = []
     openings: int = 1
+    photo_url: Optional[str] = None
+    company_logo: Optional[str] = None
+    hiring_quote: Optional[str] = None
 
 
 @app.post("/admin/jobs")

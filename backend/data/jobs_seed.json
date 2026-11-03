@@ -1,65 +1,2205 @@
 [
- {"title":"Machine Learning Engineer","company":"Neurolens AI","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":2000000,"salary_max":3500000,"description":"Build and deploy deep learning models for medical imaging. Own training pipelines and inference services.","skills":["python","pytorch","docker","mlops","computer vision"],"experience_min":2,"experience_max":6,"category":"technology","industry":"healthtech","education":"B.Tech / M.Tech","shift":"day","languages":["english"],"benefits":["health insurance","learning budget"],"openings":2},
- {"title":"Research Scientist - Medical Imaging","company":"Aarogya Labs","location":"Hyderabad","remote":true,"employment_type":"full-time","salary_min":2500000,"salary_max":4500000,"description":"Research multimodal survival prediction from MRI and clinical data. Publish and productionise.","skills":["python","pytorch","monai","deep learning","statistics"],"experience_min":1,"experience_max":5,"category":"technology","industry":"healthtech","education":"M.Tech / PhD","shift":"flexible","languages":["english"],"benefits":["remote","conference travel"],"openings":1},
- {"title":"Backend Engineer (Python)","company":"Kaveri Pay","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":1800000,"salary_max":3000000,"description":"Design payment APIs with FastAPI and PostgreSQL. High-throughput, high-reliability systems.","skills":["python","fastapi","postgresql","redis","kubernetes"],"experience_min":3,"experience_max":7,"category":"technology","industry":"fintech","education":"B.Tech / Any graduate","shift":"day","languages":["english","kannada"],"benefits":["health insurance","esops"],"openings":3},
- {"title":"Data Science Intern","company":"Vidya Analytics","location":"Pune","remote":true,"employment_type":"internship","salary_min":300000,"salary_max":480000,"description":"Work on churn prediction and dashboards with the analytics team.","skills":["python","pandas","sql","scikit-learn"],"experience_min":0,"experience_max":1,"category":"technology","industry":"analytics","education":"Pursuing B.Tech / B.Sc","shift":"flexible","languages":["english","hindi"],"benefits":["stipend","mentorship","ppo"],"openings":4},
- {"title":"NLP Engineer - Indic Languages","company":"Bhasha Tech","location":"Bengaluru","remote":true,"employment_type":"full-time","salary_min":2200000,"salary_max":4000000,"description":"Fine-tune LLMs and speech models for Hindi, Kannada and Tamil. Build evaluation harnesses.","skills":["python","pytorch","transformers","nlp","speech recognition"],"experience_min":2,"experience_max":6,"category":"technology","industry":"ai","education":"B.Tech / M.Tech","shift":"flexible","languages":["english","hindi","kannada"],"benefits":["remote","health insurance"],"openings":2},
- {"title":"Frontend Engineer (React)","company":"Pixelwave","location":"Mumbai","remote":false,"employment_type":"full-time","salary_min":1500000,"salary_max":2800000,"description":"Build delightful consumer web apps with React and TypeScript.","skills":["react","typescript","css","next.js"],"experience_min":2,"experience_max":5,"category":"technology","industry":"consumer internet","education":"Any graduate","shift":"day","languages":["english","hindi","marathi"],"benefits":["health insurance","hybrid"],"openings":2},
- {"title":"MLOps Engineer","company":"CloudNeuron","location":"Chennai","remote":true,"employment_type":"contract","salary_min":2400000,"salary_max":3800000,"description":"Own model serving, monitoring and CI/CD for ML on Kubernetes.","skills":["python","docker","kubernetes","mlops","terraform"],"experience_min":3,"experience_max":8,"category":"technology","industry":"cloud","education":"B.Tech","shift":"flexible","languages":["english","tamil"],"benefits":["remote","flexible hours"],"openings":1},
- {"title":"Computer Vision Engineer","company":"Drishti Robotics","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":2000000,"salary_max":3200000,"description":"Real-time detection and segmentation for warehouse robots. Edge deployment with TensorRT.","skills":["python","pytorch","opencv","c++","tensorrt"],"experience_min":2,"experience_max":6,"category":"technology","industry":"robotics","education":"B.Tech / M.Tech","shift":"day","languages":["english"],"benefits":["health insurance","lab access"],"openings":2},
- {"title":"Field Sales Executive","company":"Namma FMCG","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":280000,"salary_max":480000,"description":"Cover kirana beats in south Bengaluru. Take orders, place new outlets, and hit monthly primary targets. Two-wheeler required.","skills":["field sales","beat planning","order booking","fmcg","negotiation"],"experience_min":1,"experience_max":5,"category":"sales","industry":"fmcg","education":"12th / Any graduate","shift":"day","languages":["kannada","hindi","english"],"benefits":["fuel allowance","incentives","mobile"],"openings":12},
- {"title":"Medical Representative","company":"Aushadhi Pharma","location":"Hyderabad","remote":false,"employment_type":"full-time","salary_min":350000,"salary_max":650000,"description":"Promote a cardio portfolio to physicians and chemists. Maintain doctor coverage and monthly secondary sales.","skills":["medical representative","doctor detailing","pharma sales","crm"],"experience_min":1,"experience_max":6,"category":"sales","industry":"pharma","education":"B.Sc / B.Pharm / Any graduate","shift":"day","languages":["telugu","hindi","english"],"benefits":["vehicle","incentives","mediclaim"],"openings":8},
- {"title":"Insurance Advisor","company":"Suraksha Life","location":"Jaipur","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":600000,"description":"Advise families on term and health plans. Lead generation from referrals and branch walk-ins. IRDAI exam support provided.","skills":["insurance sales","lead generation","customer counselling","life insurance"],"experience_min":0,"experience_max":4,"category":"sales","industry":"insurance","education":"12th / Any graduate","shift":"flexible","languages":["hindi","english"],"benefits":["training","incentives"],"openings":15},
- {"title":"Inside Sales Executive","company":"Northstar SaaS","location":"Pune","remote":true,"employment_type":"full-time","salary_min":450000,"salary_max":800000,"description":"Qualify inbound leads and book demos for the account team. CRM hygiene and weekly pipeline reviews.","skills":["inside sales","cold calling","crm","saas","business development"],"experience_min":1,"experience_max":4,"category":"sales","industry":"saas","education":"Any graduate","shift":"day","languages":["english","hindi","marathi"],"benefits":["remote","incentives","health insurance"],"openings":6},
- {"title":"Business Development Manager","company":"Deccan Distributors","location":"Hubballi","remote":false,"employment_type":"full-time","salary_min":600000,"salary_max":1100000,"description":"Open new dealer territories across north Karnataka for an agri-input line. Own targets, collections and distributor relationships.","skills":["business development","channel sales","dealer management","collections"],"experience_min":4,"experience_max":10,"category":"sales","industry":"agri inputs","education":"Any graduate","shift":"day","languages":["kannada","hindi","english"],"benefits":["car","incentives","pf"],"openings":2},
- {"title":"Store Manager","company":"BazaarOne Retail","location":"Mumbai","remote":false,"employment_type":"full-time","salary_min":550000,"salary_max":900000,"description":"Run a 4,000 sq ft neighbourhood store. Rosters, shrinkage, visual merchandising and daily sales vs target.","skills":["store management","rostering","inventory","customer service","p&l"],"experience_min":3,"experience_max":8,"category":"management","industry":"retail","education":"Any graduate","shift":"rotational","languages":["hindi","marathi","english"],"benefits":["pf","mediclaim","staff discount"],"openings":3},
- {"title":"Plant Manager","company":"Tungabhadra Auto Components","location":"Hosur","remote":false,"employment_type":"full-time","salary_min":1400000,"salary_max":2200000,"description":"Lead a 180-person machining plant. OEE, safety, dispatch adherence and vendor quality.","skills":["plant management","oee","safety","production planning","lean"],"experience_min":8,"experience_max":16,"category":"management","industry":"auto components","education":"B.E. Mechanical","shift":"day","languages":["tamil","english","hindi"],"benefits":["company quarters option","pf","bonus"],"openings":1},
- {"title":"Project Manager","company":"Sankalp Infra","location":"Ahmedabad","remote":false,"employment_type":"full-time","salary_min":900000,"salary_max":1600000,"description":"Deliver mid-size commercial fit-outs on time and budget. Coordinate contractors, billing and client updates.","skills":["project management","billing","site coordination","ms project"],"experience_min":5,"experience_max":12,"category":"management","industry":"construction","education":"B.E. Civil / Diploma","shift":"day","languages":["gujarati","hindi","english"],"benefits":["site allowance","pf","mediclaim"],"openings":2},
- {"title":"Team Lead - People Operations","company":"Kaveri Pay","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":1200000,"salary_max":1800000,"description":"Lead a team of four HR partners for engineering and support. Hiring plans, engagement and manager coaching.","skills":["people management","hrbp","hiring","employee relations"],"experience_min":6,"experience_max":12,"category":"management","industry":"fintech","education":"MBA / Any graduate","shift":"day","languages":["english","kannada","hindi"],"benefits":["health insurance","esops"],"openings":1},
- {"title":"Cashier","company":"BazaarOne Retail","location":"Pune","remote":false,"employment_type":"full-time","salary_min":180000,"salary_max":260000,"description":"Bill customers on the POS, handle cash and UPI, and close the till accurately at end of shift.","skills":["billing","pos","cash handling","upi","customer service"],"experience_min":0,"experience_max":3,"category":"retail","industry":"retail","education":"10th / 12th","shift":"rotational","languages":["marathi","hindi"],"benefits":["pf","staff discount","meal"],"openings":10},
- {"title":"Floor Staff","company":"StyleMart","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":192000,"salary_max":288000,"description":"Help shoppers on the apparel floor, keep racks sized, and support trial rooms during peak hours.","skills":["customer service","visual merchandising","folding","upselling"],"experience_min":0,"experience_max":4,"category":"retail","industry":"apparel retail","education":"10th / 12th","shift":"rotational","languages":["kannada","hindi","english"],"benefits":["staff discount","pf"],"openings":14},
- {"title":"Inventory Associate","company":"QuickKirana Dark Store","location":"Delhi","remote":false,"employment_type":"full-time","salary_min":216000,"salary_max":312000,"description":"Receive inward stock, pick orders for 10-minute delivery, and keep bin locations accurate.","skills":["inventory","picking","barcode scanning","inward"],"experience_min":0,"experience_max":3,"category":"retail","industry":"quick commerce","education":"10th / 12th","shift":"rotational","languages":["hindi"],"benefits":["overtime","pf","meal"],"openings":20},
- {"title":"Billing Executive","company":"Annapurna Supermarket","location":"Mysuru","remote":false,"employment_type":"part-time","salary_min":120000,"salary_max":180000,"description":"Evening billing shift at a neighbourhood supermarket. Hindi and Kannada with customers.","skills":["billing","cash handling","customer service"],"experience_min":0,"experience_max":2,"category":"retail","industry":"grocery","education":"12th","shift":"night","languages":["kannada","hindi"],"benefits":["meal"],"openings":4},
- {"title":"Mechanical Fitter","company":"Tungabhadra Auto Components","location":"Hosur","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":420000,"description":"Fit and assemble machined parts to drawing. Use vernier, micrometre and torque tools. ITI preferred.","skills":["fitting","assembly","vernier","drawings","torque tools"],"experience_min":1,"experience_max":8,"category":"mechanical","industry":"auto components","education":"ITI Fitter","shift":"rotational","languages":["tamil","hindi"],"benefits":["pf","esi","canteen","overtime"],"openings":18},
- {"title":"CNC Operator","company":"Precision Turn Pvt Ltd","location":"Rajkot","remote":false,"employment_type":"full-time","salary_min":280000,"salary_max":480000,"description":"Run Fanuc turning centres. Set offsets, check first-piece, and hold tolerance on steel and aluminium jobs.","skills":["cnc","fanuc","turning","quality check","offsets"],"experience_min":2,"experience_max":8,"category":"mechanical","industry":"job work machining","education":"ITI / Diploma Mechanical","shift":"rotational","languages":["gujarati","hindi"],"benefits":["pf","esi","overtime"],"openings":8},
- {"title":"Maintenance Technician","company":"Kaveri Textiles","location":"Coimbatore","remote":false,"employment_type":"full-time","salary_min":300000,"salary_max":520000,"description":"Breakdown and preventive maintenance on looms and utilities. Night shift rotation once a month.","skills":["maintenance","preventive maintenance","mechanical","electrical basics"],"experience_min":3,"experience_max":10,"category":"mechanical","industry":"textiles","education":"ITI / Diploma","shift":"rotational","languages":["tamil"],"benefits":["pf","esi","shift allowance"],"openings":5},
- {"title":"Automobile Workshop Technician","company":"Highway Motors","location":"Nagpur","remote":false,"employment_type":"full-time","salary_min":220000,"salary_max":380000,"description":"General service, brake jobs and diagnostics on passenger cars. Two-wheeler experience also considered.","skills":["automobile","service","diagnostics","brakes","engine"],"experience_min":1,"experience_max":7,"category":"mechanical","industry":"automobile workshop","education":"ITI Motor Mechanic","shift":"day","languages":["hindi","marathi"],"benefits":["pf","esi","uniform"],"openings":6},
- {"title":"Article Assistant","company":"Mehta & Kulkarni","location":"Mumbai","remote":false,"employment_type":"articleship","salary_min":144000,"salary_max":240000,"description":"CA articleship seat. Statutory audit, GST returns and bank concurrent audits for mid-size clients.","skills":["audit","gst","tally","excel","vouching"],"experience_min":0,"experience_max":1,"category":"finance","industry":"ca firm","education":"CA Intermediate","shift":"day","languages":["english","hindi","marathi"],"benefits":["study leave","stipend"],"openings":4},
- {"title":"Chartered Accountant - Audit","company":"Deshpande & Co","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":800000,"salary_max":1400000,"description":"Qualified CA to lead statutory audits and review working papers. Client communication in English and Kannada.","skills":["ca","statutory audit","ind as","gst","excel"],"experience_min":1,"experience_max":5,"category":"finance","industry":"ca firm","education":"CA","shift":"day","languages":["english","kannada"],"benefits":["pf","mediclaim","performance bonus"],"openings":2},
- {"title":"Tax Associate","company":"Ledgerline Advisors","location":"Ahmedabad","remote":true,"employment_type":"full-time","salary_min":500000,"salary_max":900000,"description":"Prepare GST and income-tax returns for SMEs. Handle notices and reconciliation in Tally and Excel.","skills":["gst","income tax","tally","notices","excel"],"experience_min":2,"experience_max":6,"category":"finance","industry":"tax advisory","education":"CA Inter / B.Com","shift":"flexible","languages":["gujarati","hindi","english"],"benefits":["remote fridays","pf"],"openings":3},
- {"title":"Accounts Executive","company":"Annapurna Supermarket","location":"Mysuru","remote":false,"employment_type":"full-time","salary_min":280000,"salary_max":450000,"description":"Day-to-day books in Tally Prime, vendor payments, and monthly GST working for a retail chain.","skills":["tally","accounts","gst","vendor payments","excel"],"experience_min":1,"experience_max":5,"category":"finance","industry":"retail","education":"B.Com","shift":"day","languages":["kannada","english"],"benefits":["pf","staff discount"],"openings":2},
- {"title":"General Physician","company":"Aarogya Clinics","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":900000,"salary_max":1500000,"description":"OPD for a neighbourhood clinic. Manage common acute cases, referrals, and basic procedures. MBBS with registration.","skills":["mbbs","opd","general medicine","patient counselling"],"experience_min":1,"experience_max":8,"category":"healthcare","industry":"clinic","education":"MBBS","shift":"day","languages":["kannada","english","hindi"],"benefits":["mediclaim","accommodation support"],"openings":2},
- {"title":"Staff Nurse","company":"CityCare Hospital","location":"Kochi","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":420000,"description":"Ward nursing in a 120-bed hospital. Medication, vitals, and handover across rotational shifts.","skills":["nursing","ward care","medication","vitals","gnm"],"experience_min":0,"experience_max":6,"category":"healthcare","industry":"hospital","education":"GNM / B.Sc Nursing","shift":"rotational","languages":["malayalam","english"],"benefits":["esi","pf","hostel option","night allowance"],"openings":16},
- {"title":"Pharmacist","company":"Aushadhi Pharma","location":"Indore","remote":false,"employment_type":"full-time","salary_min":260000,"salary_max":420000,"description":"Dispense against prescriptions, counsel patients, and keep schedule-H records at a retail pharmacy.","skills":["pharmacy","dispensing","inventory","patient counselling"],"experience_min":0,"experience_max":5,"category":"healthcare","industry":"pharmacy retail","education":"D.Pharm / B.Pharm","shift":"rotational","languages":["hindi","english"],"benefits":["pf","esi"],"openings":4},
- {"title":"Lab Technician","company":"Aarogya Labs","location":"Hyderabad","remote":false,"employment_type":"full-time","salary_min":220000,"salary_max":380000,"description":"Collect samples and run routine biochemistry and haematology. Report critical values to the duty doctor.","skills":["phlebotomy","biochemistry","haematology","lab reports"],"experience_min":1,"experience_max":6,"category":"healthcare","industry":"diagnostics","education":"DMLT / B.Sc MLT","shift":"day","languages":["telugu","hindi","english"],"benefits":["pf","esi","health check"],"openings":5},
- {"title":"Commis Chef","company":"Coastline Hotels","location":"Goa","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":400000,"description":"Prep and line cooking for a 90-cover restaurant. Hygiene logs and mise en place for lunch and dinner.","skills":["cooking","mise en place","hygiene","indian cuisine"],"experience_min":1,"experience_max":4,"category":"hospitality","industry":"hotels","education":"Diploma in Hotel Management / 12th","shift":"rotational","languages":["hindi","english","konkani"],"benefits":["meals","staff stay","tips pool"],"openings":4},
- {"title":"Front Office Associate","company":"Coastline Hotels","location":"Jaipur","remote":false,"employment_type":"full-time","salary_min":220000,"salary_max":360000,"description":"Check-in, reservations and guest requests at a boutique hotel. Night audit once a week.","skills":["front office","reservations","guest handling","opera pms"],"experience_min":0,"experience_max":4,"category":"hospitality","industry":"hotels","education":"Diploma / Any graduate","shift":"rotational","languages":["hindi","english"],"benefits":["meals","uniform","pf"],"openings":3},
- {"title":"Housekeeping Attendant","company":"Coastline Hotels","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":180000,"salary_max":280000,"description":"Room cleaning to checklist, linen counts, and public-area upkeep. Morning shift majority.","skills":["housekeeping","room cleaning","linen","checklist"],"experience_min":0,"experience_max":5,"category":"hospitality","industry":"hotels","education":"10th","shift":"day","languages":["kannada","hindi"],"benefits":["meals","esi","pf"],"openings":10},
- {"title":"Primary School Teacher","company":"Vidya Niketan","location":"Mysuru","remote":false,"employment_type":"full-time","salary_min":280000,"salary_max":450000,"description":"Teach English and EVS for classes 1 to 4. Lesson plans, parent meetings and activity periods.","skills":["teaching","lesson planning","classroom management","english"],"experience_min":1,"experience_max":8,"category":"education","industry":"school","education":"B.Ed / D.El.Ed","shift":"day","languages":["kannada","english"],"benefits":["pf","summer break","transport"],"openings":3},
- {"title":"Maths Tutor","company":"HomeSpark Tuition","location":"Delhi","remote":true,"employment_type":"part-time","salary_min":180000,"salary_max":360000,"description":"Evening online tuitions for class 9 and 10 maths. Small batches, weekly tests.","skills":["maths","tutoring","cbse","online teaching"],"experience_min":0,"experience_max":6,"category":"education","industry":"tutoring","education":"B.Sc / B.Tech","shift":"flexible","languages":["hindi","english"],"benefits":["remote","flexible hours"],"openings":8},
- {"title":"Corporate Trainer","company":"Northstar SaaS","location":"Pune","remote":true,"employment_type":"contract","salary_min":700000,"salary_max":1200000,"description":"Design and deliver product-training sessions for new customer-success hires. Three days a week.","skills":["training","facilitation","content design","saas"],"experience_min":4,"experience_max":12,"category":"education","industry":"saas","education":"Any graduate","shift":"flexible","languages":["english","hindi"],"benefits":["remote","contract"],"openings":1},
- {"title":"Warehouse Associate","company":"QuickKirana Dark Store","location":"Noida","remote":false,"employment_type":"full-time","salary_min":216000,"salary_max":320000,"description":"Unload inbound, put-away, and pick packed orders. Standing work, rotational shifts including nights.","skills":["warehouse","picking","loading","barcode"],"experience_min":0,"experience_max":4,"category":"logistics","industry":"quick commerce","education":"10th","shift":"rotational","languages":["hindi"],"benefits":["overtime","pf","esi","meal"],"openings":25},
- {"title":"Delivery Partner","company":"QuickKirana Dark Store","location":"Bengaluru","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":420000,"description":"Last-mile delivery on company two-wheeler within a 4 km radius. Valid licence required.","skills":["delivery","two wheeler","navigation","customer handling"],"experience_min":0,"experience_max":5,"category":"logistics","industry":"quick commerce","education":"10th","shift":"rotational","languages":["kannada","hindi"],"benefits":["incentives","fuel","esi"],"openings":40},
- {"title":"Dispatch Executive","company":"Deccan Distributors","location":"Hubballi","remote":false,"employment_type":"full-time","salary_min":260000,"salary_max":400000,"description":"Plan daily vehicle loads, coordinate drivers, and update dealers on ETAs.","skills":["dispatch","fleet coordination","excel","transport"],"experience_min":1,"experience_max":6,"category":"logistics","industry":"distribution","education":"12th / Any graduate","shift":"day","languages":["kannada","hindi"],"benefits":["pf","mobile"],"openings":2},
- {"title":"Recruiter","company":"Pixelwave","location":"Mumbai","remote":false,"employment_type":"full-time","salary_min":500000,"salary_max":900000,"description":"Full-cycle hiring for engineering and design. Sourcing, screens, and offer rollout.","skills":["recruiting","sourcing","screening","offer management"],"experience_min":2,"experience_max":6,"category":"hr","industry":"consumer internet","education":"Any graduate","shift":"day","languages":["english","hindi"],"benefits":["health insurance","hybrid"],"openings":2},
- {"title":"Payroll Executive","company":"Ledgerline Advisors","location":"Ahmedabad","remote":false,"employment_type":"full-time","salary_min":320000,"salary_max":520000,"description":"Monthly payroll, PF, ESI and full-and-final for a book of SME clients.","skills":["payroll","pf","esi","excel","statutory compliance"],"experience_min":2,"experience_max":7,"category":"hr","industry":"bpo services","education":"B.Com","shift":"day","languages":["gujarati","hindi","english"],"benefits":["pf","mediclaim"],"openings":2},
- {"title":"HR Business Partner","company":"CityCare Hospital","location":"Kochi","remote":false,"employment_type":"full-time","salary_min":700000,"salary_max":1100000,"description":"HRBP for nursing and admin. Hiring surges, grievance handling and shift-policy rollout.","skills":["hrbp","employee relations","hiring","hospital hr"],"experience_min":5,"experience_max":10,"category":"hr","industry":"hospital","education":"MBA HR / Any graduate","shift":"day","languages":["malayalam","english"],"benefits":["mediclaim","pf"],"openings":1},
- {"title":"Performance Marketing Executive","company":"StyleMart","location":"Bengaluru","remote":true,"employment_type":"full-time","salary_min":600000,"salary_max":1100000,"description":"Run Meta and Google campaigns for an apparel brand. Weekly ROAS reviews with the founder.","skills":["performance marketing","meta ads","google ads","roas"],"experience_min":2,"experience_max":6,"category":"marketing","industry":"apparel retail","education":"Any graduate","shift":"flexible","languages":["english","kannada"],"benefits":["remote","health insurance"],"openings":2},
- {"title":"Content Writer","company":"Bhasha Tech","location":"Bengaluru","remote":true,"employment_type":"contract","salary_min":400000,"salary_max":700000,"description":"Write Hindi and English product copy and help articles for an Indic language app.","skills":["content writing","hindi","seo","social media"],"experience_min":1,"experience_max":5,"category":"marketing","industry":"ai","education":"Any graduate","shift":"flexible","languages":["hindi","english"],"benefits":["remote"],"openings":2},
- {"title":"Brand Executive","company":"Namma FMCG","location":"Mumbai","remote":false,"employment_type":"full-time","salary_min":550000,"salary_max":950000,"description":"In-store branding, festival campaigns and distributor communication for a regional snacks brand.","skills":["brand","trade marketing","campaigns","vendor coordination"],"experience_min":2,"experience_max":6,"category":"marketing","industry":"fmcg","education":"Any graduate / MBA","shift":"day","languages":["hindi","english","marathi"],"benefits":["pf","mediclaim"],"openings":1},
- {"title":"Voice Process Associate","company":"Helpline BPO","location":"Jaipur","remote":false,"employment_type":"full-time","salary_min":220000,"salary_max":320000,"description":"Inbound Hindi voice support for a telecom account. Night shift, rotational week offs.","skills":["voice process","customer support","telecom","crm"],"experience_min":0,"experience_max":3,"category":"support","industry":"bpo","education":"12th / Any graduate","shift":"night","languages":["hindi"],"benefits":["night allowance","pf","transport"],"openings":40},
- {"title":"Chat Support Executive","company":"Northstar SaaS","location":"Indore","remote":true,"employment_type":"full-time","salary_min":300000,"salary_max":480000,"description":"English chat support for SMB customers. Tickets, how-to replies, and escalation notes.","skills":["chat support","tickets","written english","saas"],"experience_min":0,"experience_max":3,"category":"support","industry":"saas","education":"Any graduate","shift":"rotational","languages":["english","hindi"],"benefits":["remote","health insurance"],"openings":8},
- {"title":"Customer Support - Kannada","company":"Kaveri Pay","location":"Mangaluru","remote":false,"employment_type":"full-time","salary_min":280000,"salary_max":420000,"description":"Help merchants with QR payments and settlement queries. Kannada first, Hindi and English welcome.","skills":["customer support","payments","kannada","crm"],"experience_min":0,"experience_max":4,"category":"support","industry":"fintech","education":"12th / Any graduate","shift":"day","languages":["kannada","hindi","english"],"benefits":["pf","meal","incentives"],"openings":10},
- {"title":"Junior Advocate","company":"Reddy Chambers","location":"Hyderabad","remote":false,"employment_type":"full-time","salary_min":360000,"salary_max":600000,"description":"Drafting, filing and briefing for civil and consumer matters. Court attendance three days a week.","skills":["drafting","litigation","legal research","court filing"],"experience_min":0,"experience_max":3,"category":"legal","industry":"law firm","education":"LLB","shift":"day","languages":["telugu","english"],"benefits":["court allowance"],"openings":2},
- {"title":"Compliance Counsel","company":"Suraksha Life","location":"Mumbai","remote":false,"employment_type":"full-time","salary_min":1400000,"salary_max":2200000,"description":"Review insurance product wordings and IRDAI filings. Coordinate with actuarial and distribution.","skills":["compliance","contracts","irdai","legal counsel"],"experience_min":4,"experience_max":10,"category":"legal","industry":"insurance","education":"LLB","shift":"day","languages":["english","hindi"],"benefits":["mediclaim","pf","bonus"],"openings":1},
- {"title":"Electrician","company":"Sankalp Infra","location":"Ahmedabad","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":420000,"description":"Site wiring, DB installation and testing for commercial fit-outs. ITI wireman preferred. Own tools a plus.","skills":["electrician","wiring","db","testing","site work"],"experience_min":2,"experience_max":10,"category":"trades","industry":"construction","education":"ITI Electrician","shift":"day","languages":["gujarati","hindi"],"benefits":["pf","esi","site allowance"],"openings":8},
- {"title":"Plumber","company":"CityCare Hospital","location":"Kochi","remote":false,"employment_type":"full-time","salary_min":220000,"salary_max":360000,"description":"Maintenance plumbing across wards and the canteen. Emergency call-outs on a rota.","skills":["plumbing","maintenance","pipes","leak repair"],"experience_min":2,"experience_max":12,"category":"trades","industry":"hospital","education":"ITI / experience","shift":"rotational","languages":["malayalam"],"benefits":["esi","pf","call-out pay"],"openings":2},
- {"title":"Carpenter","company":"StyleMart","location":"Bengaluru","remote":false,"employment_type":"contract","salary_min":280000,"salary_max":480000,"description":"In-store fixture carpentry and repairs across three Bengaluru stores. Contract, tools provided on site.","skills":["carpentry","fixtures","measurements","finishing"],"experience_min":3,"experience_max":15,"category":"trades","industry":"retail","education":"ITI / experience","shift":"day","languages":["kannada","hindi"],"benefits":["contract"],"openings":2},
- {"title":"Agronomist","company":"Deccan Distributors","location":"Davangere","remote":false,"employment_type":"full-time","salary_min":400000,"salary_max":700000,"description":"Farmer meetings and crop-advisory demos for a fertiliser and seed line. Field travel four days a week.","skills":["agronomy","farmer meetings","crop advisory","demos"],"experience_min":1,"experience_max":7,"category":"agriculture","industry":"agri inputs","education":"B.Sc Agriculture","shift":"day","languages":["kannada","hindi"],"benefits":["bike","fuel","pf"],"openings":4},
- {"title":"Dairy Supervisor","company":"Nandini Partners","location":"Hassan","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":380000,"description":"Morning milk collection route, fat/SNF testing, and farmer payment reconciliation.","skills":["dairy","milk collection","quality testing","farmer payments"],"experience_min":1,"experience_max":8,"category":"agriculture","industry":"dairy","education":"12th / Diploma","shift":"day","languages":["kannada"],"benefits":["pf","esi"],"openings":3},
- {"title":"Graphic Designer","company":"StyleMart","location":"Mumbai","remote":true,"employment_type":"full-time","salary_min":450000,"salary_max":800000,"description":"Campaign creatives, lookbooks and marketplace images for an apparel label. Figma and Photoshop.","skills":["graphic design","figma","photoshop","social creatives"],"experience_min":2,"experience_max":6,"category":"creative","industry":"apparel retail","education":"Any graduate / design diploma","shift":"flexible","languages":["english","hindi"],"benefits":["remote","health insurance"],"openings":2},
- {"title":"Video Editor","company":"Bhasha Tech","location":"Bengaluru","remote":true,"employment_type":"contract","salary_min":400000,"salary_max":720000,"description":"Cut short-form product videos in Hindi and Kannada. Captions, music and weekly batch delivery.","skills":["video editing","premiere","captions","short form"],"experience_min":1,"experience_max":5,"category":"creative","industry":"ai","education":"Any graduate","shift":"flexible","languages":["kannada","hindi","english"],"benefits":["remote"],"openings":1},
- {"title":"Operations Executive","company":"Helpline BPO","location":"Jaipur","remote":false,"employment_type":"full-time","salary_min":300000,"salary_max":480000,"description":"Floor admin: roster adherence, transport logs, and daily shrinkage of no-shows for a 200-seat centre.","skills":["operations","roster","admin","excel","reporting"],"experience_min":1,"experience_max":5,"category":"operations","industry":"bpo","education":"Any graduate","shift":"rotational","languages":["hindi","english"],"benefits":["pf","transport"],"openings":3},
- {"title":"Facilities Executive","company":"CityCare Hospital","location":"Kochi","remote":false,"employment_type":"full-time","salary_min":280000,"salary_max":450000,"description":"Vendors for housekeeping, biomedical waste and canteen. Daily rounds and complaint closure.","skills":["facilities","vendor management","admin","complaints"],"experience_min":2,"experience_max":7,"category":"operations","industry":"hospital","education":"Any graduate","shift":"day","languages":["malayalam","english"],"benefits":["pf","meals","mediclaim"],"openings":1},
- {"title":"Back Office Executive","company":"Mehta & Kulkarni","location":"Mumbai","remote":false,"employment_type":"full-time","salary_min":240000,"salary_max":380000,"description":"Filing, scanning, appointment scheduling and client follow-ups for a CA firm.","skills":["back office","data entry","filing","scheduling","excel"],"experience_min":0,"experience_max":4,"category":"operations","industry":"ca firm","education":"12th / B.Com","shift":"day","languages":["hindi","marathi","english"],"benefits":["pf"],"openings":2}
+  {
+    "title": "Machine Learning Engineer",
+    "company": "Neurolens AI",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 2000000,
+    "salary_max": 3500000,
+    "description": "Build and deploy deep learning models for medical imaging. Own training pipelines and inference services.",
+    "skills": [
+      "python",
+      "pytorch",
+      "docker",
+      "mlops",
+      "computer vision"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "technology",
+    "industry": "healthtech",
+    "education": "B.Tech / M.Tech",
+    "shift": "day",
+    "languages": [
+      "english"
+    ],
+    "benefits": [
+      "health insurance",
+      "learning budget"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Neurolens AI&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Research Scientist - Medical Imaging",
+    "company": "Aarogya Labs",
+    "location": "Hyderabad",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 2500000,
+    "salary_max": 4500000,
+    "description": "Research multimodal survival prediction from MRI and clinical data. Publish and productionise.",
+    "skills": [
+      "python",
+      "pytorch",
+      "monai",
+      "deep learning",
+      "statistics"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "technology",
+    "industry": "healthtech",
+    "education": "M.Tech / PhD",
+    "shift": "flexible",
+    "languages": [
+      "english"
+    ],
+    "benefits": [
+      "remote",
+      "conference travel"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Aarogya Labs&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Backend Engineer (Python)",
+    "company": "Kaveri Pay",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 1800000,
+    "salary_max": 3000000,
+    "description": "Design payment APIs with FastAPI and PostgreSQL. High-throughput, high-reliability systems.",
+    "skills": [
+      "python",
+      "fastapi",
+      "postgresql",
+      "redis",
+      "kubernetes"
+    ],
+    "experience_min": 3,
+    "experience_max": 7,
+    "category": "technology",
+    "industry": "fintech",
+    "education": "B.Tech / Any graduate",
+    "shift": "day",
+    "languages": [
+      "english",
+      "kannada"
+    ],
+    "benefits": [
+      "health insurance",
+      "esops"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Kaveri Pay&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Data Science Intern",
+    "company": "Vidya Analytics",
+    "location": "Pune",
+    "remote": true,
+    "employment_type": "internship",
+    "salary_min": 300000,
+    "salary_max": 480000,
+    "description": "Work on churn prediction and dashboards with the analytics team.",
+    "skills": [
+      "python",
+      "pandas",
+      "sql",
+      "scikit-learn"
+    ],
+    "experience_min": 0,
+    "experience_max": 1,
+    "category": "technology",
+    "industry": "analytics",
+    "education": "Pursuing B.Tech / B.Sc",
+    "shift": "flexible",
+    "languages": [
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "stipend",
+      "mentorship",
+      "ppo"
+    ],
+    "openings": 4,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Vidya Analytics&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "NLP Engineer - Indic Languages",
+    "company": "Bhasha Tech",
+    "location": "Bengaluru",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 2200000,
+    "salary_max": 4000000,
+    "description": "Fine-tune LLMs and speech models for Hindi, Kannada and Tamil. Build evaluation harnesses.",
+    "skills": [
+      "python",
+      "pytorch",
+      "transformers",
+      "nlp",
+      "speech recognition"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "technology",
+    "industry": "ai",
+    "education": "B.Tech / M.Tech",
+    "shift": "flexible",
+    "languages": [
+      "english",
+      "hindi",
+      "kannada"
+    ],
+    "benefits": [
+      "remote",
+      "health insurance"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Bhasha Tech&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Frontend Engineer (React)",
+    "company": "Pixelwave",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 1500000,
+    "salary_max": 2800000,
+    "description": "Build delightful consumer web apps with React and TypeScript.",
+    "skills": [
+      "react",
+      "typescript",
+      "css",
+      "next.js"
+    ],
+    "experience_min": 2,
+    "experience_max": 5,
+    "category": "technology",
+    "industry": "consumer internet",
+    "education": "Any graduate",
+    "shift": "day",
+    "languages": [
+      "english",
+      "hindi",
+      "marathi"
+    ],
+    "benefits": [
+      "health insurance",
+      "hybrid"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Pixelwave&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "MLOps Engineer",
+    "company": "CloudNeuron",
+    "location": "Chennai",
+    "remote": true,
+    "employment_type": "contract",
+    "salary_min": 2400000,
+    "salary_max": 3800000,
+    "description": "Own model serving, monitoring and CI/CD for ML on Kubernetes.",
+    "skills": [
+      "python",
+      "docker",
+      "kubernetes",
+      "mlops",
+      "terraform"
+    ],
+    "experience_min": 3,
+    "experience_max": 8,
+    "category": "technology",
+    "industry": "cloud",
+    "education": "B.Tech",
+    "shift": "flexible",
+    "languages": [
+      "english",
+      "tamil"
+    ],
+    "benefits": [
+      "remote",
+      "flexible hours"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=CloudNeuron&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Computer Vision Engineer",
+    "company": "Drishti Robotics",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 2000000,
+    "salary_max": 3200000,
+    "description": "Real-time detection and segmentation for warehouse robots. Edge deployment with TensorRT.",
+    "skills": [
+      "python",
+      "pytorch",
+      "opencv",
+      "c++",
+      "tensorrt"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "technology",
+    "industry": "robotics",
+    "education": "B.Tech / M.Tech",
+    "shift": "day",
+    "languages": [
+      "english"
+    ],
+    "benefits": [
+      "health insurance",
+      "lab access"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Come build cutting-edge systems and scale impactful software with our team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Drishti Robotics&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Field Sales Executive",
+    "company": "Namma FMCG",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 280000,
+    "salary_max": 480000,
+    "description": "Cover kirana beats in south Bengaluru. Take orders, place new outlets, and hit monthly primary targets. Two-wheeler required.",
+    "skills": [
+      "field sales",
+      "beat planning",
+      "order booking",
+      "fmcg",
+      "negotiation"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "sales",
+    "industry": "fmcg",
+    "education": "12th / Any graduate",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "fuel allowance",
+      "incentives",
+      "mobile"
+    ],
+    "openings": 12,
+    "photo_url": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Drive exponential growth and represent products our customers truly love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Namma FMCG&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Medical Representative",
+    "company": "Aushadhi Pharma",
+    "location": "Hyderabad",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 350000,
+    "salary_max": 650000,
+    "description": "Promote a cardio portfolio to physicians and chemists. Maintain doctor coverage and monthly secondary sales.",
+    "skills": [
+      "medical representative",
+      "doctor detailing",
+      "pharma sales",
+      "crm"
+    ],
+    "experience_min": 1,
+    "experience_max": 6,
+    "category": "sales",
+    "industry": "pharma",
+    "education": "B.Sc / B.Pharm / Any graduate",
+    "shift": "day",
+    "languages": [
+      "telugu",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "vehicle",
+      "incentives",
+      "mediclaim"
+    ],
+    "openings": 8,
+    "photo_url": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Drive exponential growth and represent products our customers truly love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Aushadhi Pharma&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Insurance Advisor",
+    "company": "Suraksha Life",
+    "location": "Jaipur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 600000,
+    "description": "Advise families on term and health plans. Lead generation from referrals and branch walk-ins. IRDAI exam support provided.",
+    "skills": [
+      "insurance sales",
+      "lead generation",
+      "customer counselling",
+      "life insurance"
+    ],
+    "experience_min": 0,
+    "experience_max": 4,
+    "category": "sales",
+    "industry": "insurance",
+    "education": "12th / Any graduate",
+    "shift": "flexible",
+    "languages": [
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "training",
+      "incentives"
+    ],
+    "openings": 15,
+    "photo_url": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Drive exponential growth and represent products our customers truly love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Suraksha Life&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Inside Sales Executive",
+    "company": "Northstar SaaS",
+    "location": "Pune",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 450000,
+    "salary_max": 800000,
+    "description": "Qualify inbound leads and book demos for the account team. CRM hygiene and weekly pipeline reviews.",
+    "skills": [
+      "inside sales",
+      "cold calling",
+      "crm",
+      "saas",
+      "business development"
+    ],
+    "experience_min": 1,
+    "experience_max": 4,
+    "category": "sales",
+    "industry": "saas",
+    "education": "Any graduate",
+    "shift": "day",
+    "languages": [
+      "english",
+      "hindi",
+      "marathi"
+    ],
+    "benefits": [
+      "remote",
+      "incentives",
+      "health insurance"
+    ],
+    "openings": 6,
+    "photo_url": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Drive exponential growth and represent products our customers truly love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Northstar SaaS&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Business Development Manager",
+    "company": "Deccan Distributors",
+    "location": "Hubballi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 600000,
+    "salary_max": 1100000,
+    "description": "Open new dealer territories across north Karnataka for an agri-input line. Own targets, collections and distributor relationships.",
+    "skills": [
+      "business development",
+      "channel sales",
+      "dealer management",
+      "collections"
+    ],
+    "experience_min": 4,
+    "experience_max": 10,
+    "category": "sales",
+    "industry": "agri inputs",
+    "education": "Any graduate",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "car",
+      "incentives",
+      "pf"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Drive exponential growth and represent products our customers truly love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Deccan Distributors&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Store Manager",
+    "company": "BazaarOne Retail",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 550000,
+    "salary_max": 900000,
+    "description": "Run a 4,000 sq ft neighbourhood store. Rosters, shrinkage, visual merchandising and daily sales vs target.",
+    "skills": [
+      "store management",
+      "rostering",
+      "inventory",
+      "customer service",
+      "p&l"
+    ],
+    "experience_min": 3,
+    "experience_max": 8,
+    "category": "management",
+    "industry": "retail",
+    "education": "Any graduate",
+    "shift": "rotational",
+    "languages": [
+      "hindi",
+      "marathi",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "mediclaim",
+      "staff discount"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Lead high-impact initiatives and empower passionate people to succeed!",
+    "company_logo": "https://ui-avatars.com/api/?name=BazaarOne Retail&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Plant Manager",
+    "company": "Tungabhadra Auto Components",
+    "location": "Hosur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 1400000,
+    "salary_max": 2200000,
+    "description": "Lead a 180-person machining plant. OEE, safety, dispatch adherence and vendor quality.",
+    "skills": [
+      "plant management",
+      "oee",
+      "safety",
+      "production planning",
+      "lean"
+    ],
+    "experience_min": 8,
+    "experience_max": 16,
+    "category": "management",
+    "industry": "auto components",
+    "education": "B.E. Mechanical",
+    "shift": "day",
+    "languages": [
+      "tamil",
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "company quarters option",
+      "pf",
+      "bonus"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Lead high-impact initiatives and empower passionate people to succeed!",
+    "company_logo": "https://ui-avatars.com/api/?name=Tungabhadra Auto Components&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Project Manager",
+    "company": "Sankalp Infra",
+    "location": "Ahmedabad",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 900000,
+    "salary_max": 1600000,
+    "description": "Deliver mid-size commercial fit-outs on time and budget. Coordinate contractors, billing and client updates.",
+    "skills": [
+      "project management",
+      "billing",
+      "site coordination",
+      "ms project"
+    ],
+    "experience_min": 5,
+    "experience_max": 12,
+    "category": "management",
+    "industry": "construction",
+    "education": "B.E. Civil / Diploma",
+    "shift": "day",
+    "languages": [
+      "gujarati",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "site allowance",
+      "pf",
+      "mediclaim"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Lead high-impact initiatives and empower passionate people to succeed!",
+    "company_logo": "https://ui-avatars.com/api/?name=Sankalp Infra&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Team Lead - People Operations",
+    "company": "Kaveri Pay",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 1200000,
+    "salary_max": 1800000,
+    "description": "Lead a team of four HR partners for engineering and support. Hiring plans, engagement and manager coaching.",
+    "skills": [
+      "people management",
+      "hrbp",
+      "hiring",
+      "employee relations"
+    ],
+    "experience_min": 6,
+    "experience_max": 12,
+    "category": "management",
+    "industry": "fintech",
+    "education": "MBA / Any graduate",
+    "shift": "day",
+    "languages": [
+      "english",
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "health insurance",
+      "esops"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Lead high-impact initiatives and empower passionate people to succeed!",
+    "company_logo": "https://ui-avatars.com/api/?name=Kaveri Pay&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Cashier",
+    "company": "BazaarOne Retail",
+    "location": "Pune",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 180000,
+    "salary_max": 260000,
+    "description": "Bill customers on the POS, handle cash and UPI, and close the till accurately at end of shift.",
+    "skills": [
+      "billing",
+      "pos",
+      "cash handling",
+      "upi",
+      "customer service"
+    ],
+    "experience_min": 0,
+    "experience_max": 3,
+    "category": "retail",
+    "industry": "retail",
+    "education": "10th / 12th",
+    "shift": "rotational",
+    "languages": [
+      "marathi",
+      "hindi"
+    ],
+    "benefits": [
+      "pf",
+      "staff discount",
+      "meal"
+    ],
+    "openings": 10,
+    "photo_url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the welcoming face our community looks forward to visiting every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=BazaarOne Retail&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Floor Staff",
+    "company": "StyleMart",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 192000,
+    "salary_max": 288000,
+    "description": "Help shoppers on the apparel floor, keep racks sized, and support trial rooms during peak hours.",
+    "skills": [
+      "customer service",
+      "visual merchandising",
+      "folding",
+      "upselling"
+    ],
+    "experience_min": 0,
+    "experience_max": 4,
+    "category": "retail",
+    "industry": "apparel retail",
+    "education": "10th / 12th",
+    "shift": "rotational",
+    "languages": [
+      "kannada",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "staff discount",
+      "pf"
+    ],
+    "openings": 14,
+    "photo_url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the welcoming face our community looks forward to visiting every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=StyleMart&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Inventory Associate",
+    "company": "QuickKirana Dark Store",
+    "location": "Delhi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 216000,
+    "salary_max": 312000,
+    "description": "Receive inward stock, pick orders for 10-minute delivery, and keep bin locations accurate.",
+    "skills": [
+      "inventory",
+      "picking",
+      "barcode scanning",
+      "inward"
+    ],
+    "experience_min": 0,
+    "experience_max": 3,
+    "category": "retail",
+    "industry": "quick commerce",
+    "education": "10th / 12th",
+    "shift": "rotational",
+    "languages": [
+      "hindi"
+    ],
+    "benefits": [
+      "overtime",
+      "pf",
+      "meal"
+    ],
+    "openings": 20,
+    "photo_url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the welcoming face our community looks forward to visiting every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=QuickKirana Dark Store&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Billing Executive",
+    "company": "Annapurna Supermarket",
+    "location": "Mysuru",
+    "remote": false,
+    "employment_type": "part-time",
+    "salary_min": 120000,
+    "salary_max": 180000,
+    "description": "Evening billing shift at a neighbourhood supermarket. Hindi and Kannada with customers.",
+    "skills": [
+      "billing",
+      "cash handling",
+      "customer service"
+    ],
+    "experience_min": 0,
+    "experience_max": 2,
+    "category": "retail",
+    "industry": "grocery",
+    "education": "12th",
+    "shift": "night",
+    "languages": [
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "meal"
+    ],
+    "openings": 4,
+    "photo_url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the welcoming face our community looks forward to visiting every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=Annapurna Supermarket&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Mechanical Fitter",
+    "company": "Tungabhadra Auto Components",
+    "location": "Hosur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 420000,
+    "description": "Fit and assemble machined parts to drawing. Use vernier, micrometre and torque tools. ITI preferred.",
+    "skills": [
+      "fitting",
+      "assembly",
+      "vernier",
+      "drawings",
+      "torque tools"
+    ],
+    "experience_min": 1,
+    "experience_max": 8,
+    "category": "mechanical",
+    "industry": "auto components",
+    "education": "ITI Fitter",
+    "shift": "rotational",
+    "languages": [
+      "tamil",
+      "hindi"
+    ],
+    "benefits": [
+      "pf",
+      "esi",
+      "canteen",
+      "overtime"
+    ],
+    "openings": 18,
+    "photo_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Craft world-class precision engineering and push machinery limits with us!",
+    "company_logo": "https://ui-avatars.com/api/?name=Tungabhadra Auto Components&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "CNC Operator",
+    "company": "Precision Turn Pvt Ltd",
+    "location": "Rajkot",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 280000,
+    "salary_max": 480000,
+    "description": "Run Fanuc turning centres. Set offsets, check first-piece, and hold tolerance on steel and aluminium jobs.",
+    "skills": [
+      "cnc",
+      "fanuc",
+      "turning",
+      "quality check",
+      "offsets"
+    ],
+    "experience_min": 2,
+    "experience_max": 8,
+    "category": "mechanical",
+    "industry": "job work machining",
+    "education": "ITI / Diploma Mechanical",
+    "shift": "rotational",
+    "languages": [
+      "gujarati",
+      "hindi"
+    ],
+    "benefits": [
+      "pf",
+      "esi",
+      "overtime"
+    ],
+    "openings": 8,
+    "photo_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Craft world-class precision engineering and push machinery limits with us!",
+    "company_logo": "https://ui-avatars.com/api/?name=Precision Turn Pvt Ltd&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Maintenance Technician",
+    "company": "Kaveri Textiles",
+    "location": "Coimbatore",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 300000,
+    "salary_max": 520000,
+    "description": "Breakdown and preventive maintenance on looms and utilities. Night shift rotation once a month.",
+    "skills": [
+      "maintenance",
+      "preventive maintenance",
+      "mechanical",
+      "electrical basics"
+    ],
+    "experience_min": 3,
+    "experience_max": 10,
+    "category": "mechanical",
+    "industry": "textiles",
+    "education": "ITI / Diploma",
+    "shift": "rotational",
+    "languages": [
+      "tamil"
+    ],
+    "benefits": [
+      "pf",
+      "esi",
+      "shift allowance"
+    ],
+    "openings": 5,
+    "photo_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Craft world-class precision engineering and push machinery limits with us!",
+    "company_logo": "https://ui-avatars.com/api/?name=Kaveri Textiles&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Automobile Workshop Technician",
+    "company": "Highway Motors",
+    "location": "Nagpur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 220000,
+    "salary_max": 380000,
+    "description": "General service, brake jobs and diagnostics on passenger cars. Two-wheeler experience also considered.",
+    "skills": [
+      "automobile",
+      "service",
+      "diagnostics",
+      "brakes",
+      "engine"
+    ],
+    "experience_min": 1,
+    "experience_max": 7,
+    "category": "mechanical",
+    "industry": "automobile workshop",
+    "education": "ITI Motor Mechanic",
+    "shift": "day",
+    "languages": [
+      "hindi",
+      "marathi"
+    ],
+    "benefits": [
+      "pf",
+      "esi",
+      "uniform"
+    ],
+    "openings": 6,
+    "photo_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Craft world-class precision engineering and push machinery limits with us!",
+    "company_logo": "https://ui-avatars.com/api/?name=Highway Motors&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Article Assistant",
+    "company": "Mehta & Kulkarni",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "articleship",
+    "salary_min": 144000,
+    "salary_max": 240000,
+    "description": "CA articleship seat. Statutory audit, GST returns and bank concurrent audits for mid-size clients.",
+    "skills": [
+      "audit",
+      "gst",
+      "tally",
+      "excel",
+      "vouching"
+    ],
+    "experience_min": 0,
+    "experience_max": 1,
+    "category": "finance",
+    "industry": "ca firm",
+    "education": "CA Intermediate",
+    "shift": "day",
+    "languages": [
+      "english",
+      "hindi",
+      "marathi"
+    ],
+    "benefits": [
+      "study leave",
+      "stipend"
+    ],
+    "openings": 4,
+    "photo_url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Shape financial strategy and bring precision to high-stakes decisions!",
+    "company_logo": "https://ui-avatars.com/api/?name=Mehta & Kulkarni&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Chartered Accountant - Audit",
+    "company": "Deshpande & Co",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 800000,
+    "salary_max": 1400000,
+    "description": "Qualified CA to lead statutory audits and review working papers. Client communication in English and Kannada.",
+    "skills": [
+      "ca",
+      "statutory audit",
+      "ind as",
+      "gst",
+      "excel"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "finance",
+    "industry": "ca firm",
+    "education": "CA",
+    "shift": "day",
+    "languages": [
+      "english",
+      "kannada"
+    ],
+    "benefits": [
+      "pf",
+      "mediclaim",
+      "performance bonus"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Shape financial strategy and bring precision to high-stakes decisions!",
+    "company_logo": "https://ui-avatars.com/api/?name=Deshpande & Co&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Tax Associate",
+    "company": "Ledgerline Advisors",
+    "location": "Ahmedabad",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 500000,
+    "salary_max": 900000,
+    "description": "Prepare GST and income-tax returns for SMEs. Handle notices and reconciliation in Tally and Excel.",
+    "skills": [
+      "gst",
+      "income tax",
+      "tally",
+      "notices",
+      "excel"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "finance",
+    "industry": "tax advisory",
+    "education": "CA Inter / B.Com",
+    "shift": "flexible",
+    "languages": [
+      "gujarati",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "remote fridays",
+      "pf"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Shape financial strategy and bring precision to high-stakes decisions!",
+    "company_logo": "https://ui-avatars.com/api/?name=Ledgerline Advisors&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Accounts Executive",
+    "company": "Annapurna Supermarket",
+    "location": "Mysuru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 280000,
+    "salary_max": 450000,
+    "description": "Day-to-day books in Tally Prime, vendor payments, and monthly GST working for a retail chain.",
+    "skills": [
+      "tally",
+      "accounts",
+      "gst",
+      "vendor payments",
+      "excel"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "finance",
+    "industry": "retail",
+    "education": "B.Com",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "staff discount"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Shape financial strategy and bring precision to high-stakes decisions!",
+    "company_logo": "https://ui-avatars.com/api/?name=Annapurna Supermarket&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "General Physician",
+    "company": "Aarogya Clinics",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 900000,
+    "salary_max": 1500000,
+    "description": "OPD for a neighbourhood clinic. Manage common acute cases, referrals, and basic procedures. MBBS with registration.",
+    "skills": [
+      "mbbs",
+      "opd",
+      "general medicine",
+      "patient counselling"
+    ],
+    "experience_min": 1,
+    "experience_max": 8,
+    "category": "healthcare",
+    "industry": "clinic",
+    "education": "MBBS",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "mediclaim",
+      "accommodation support"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Provide compassionate, transformative care and touch real lives daily!",
+    "company_logo": "https://ui-avatars.com/api/?name=Aarogya Clinics&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Staff Nurse",
+    "company": "CityCare Hospital",
+    "location": "Kochi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 420000,
+    "description": "Ward nursing in a 120-bed hospital. Medication, vitals, and handover across rotational shifts.",
+    "skills": [
+      "nursing",
+      "ward care",
+      "medication",
+      "vitals",
+      "gnm"
+    ],
+    "experience_min": 0,
+    "experience_max": 6,
+    "category": "healthcare",
+    "industry": "hospital",
+    "education": "GNM / B.Sc Nursing",
+    "shift": "rotational",
+    "languages": [
+      "malayalam",
+      "english"
+    ],
+    "benefits": [
+      "esi",
+      "pf",
+      "hostel option",
+      "night allowance"
+    ],
+    "openings": 16,
+    "photo_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Provide compassionate, transformative care and touch real lives daily!",
+    "company_logo": "https://ui-avatars.com/api/?name=CityCare Hospital&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Pharmacist",
+    "company": "Aushadhi Pharma",
+    "location": "Indore",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 260000,
+    "salary_max": 420000,
+    "description": "Dispense against prescriptions, counsel patients, and keep schedule-H records at a retail pharmacy.",
+    "skills": [
+      "pharmacy",
+      "dispensing",
+      "inventory",
+      "patient counselling"
+    ],
+    "experience_min": 0,
+    "experience_max": 5,
+    "category": "healthcare",
+    "industry": "pharmacy retail",
+    "education": "D.Pharm / B.Pharm",
+    "shift": "rotational",
+    "languages": [
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "esi"
+    ],
+    "openings": 4,
+    "photo_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Provide compassionate, transformative care and touch real lives daily!",
+    "company_logo": "https://ui-avatars.com/api/?name=Aushadhi Pharma&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Lab Technician",
+    "company": "Aarogya Labs",
+    "location": "Hyderabad",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 220000,
+    "salary_max": 380000,
+    "description": "Collect samples and run routine biochemistry and haematology. Report critical values to the duty doctor.",
+    "skills": [
+      "phlebotomy",
+      "biochemistry",
+      "haematology",
+      "lab reports"
+    ],
+    "experience_min": 1,
+    "experience_max": 6,
+    "category": "healthcare",
+    "industry": "diagnostics",
+    "education": "DMLT / B.Sc MLT",
+    "shift": "day",
+    "languages": [
+      "telugu",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "esi",
+      "health check"
+    ],
+    "openings": 5,
+    "photo_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Provide compassionate, transformative care and touch real lives daily!",
+    "company_logo": "https://ui-avatars.com/api/?name=Aarogya Labs&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Commis Chef",
+    "company": "Coastline Hotels",
+    "location": "Goa",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 400000,
+    "description": "Prep and line cooking for a 90-cover restaurant. Hygiene logs and mise en place for lunch and dinner.",
+    "skills": [
+      "cooking",
+      "mise en place",
+      "hygiene",
+      "indian cuisine"
+    ],
+    "experience_min": 1,
+    "experience_max": 4,
+    "category": "hospitality",
+    "industry": "hotels",
+    "education": "Diploma in Hotel Management / 12th",
+    "shift": "rotational",
+    "languages": [
+      "hindi",
+      "english",
+      "konkani"
+    ],
+    "benefits": [
+      "meals",
+      "staff stay",
+      "tips pool"
+    ],
+    "openings": 4,
+    "photo_url": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Deliver memorable guest experiences with our warm hospitality family!",
+    "company_logo": "https://ui-avatars.com/api/?name=Coastline Hotels&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Front Office Associate",
+    "company": "Coastline Hotels",
+    "location": "Jaipur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 220000,
+    "salary_max": 360000,
+    "description": "Check-in, reservations and guest requests at a boutique hotel. Night audit once a week.",
+    "skills": [
+      "front office",
+      "reservations",
+      "guest handling",
+      "opera pms"
+    ],
+    "experience_min": 0,
+    "experience_max": 4,
+    "category": "hospitality",
+    "industry": "hotels",
+    "education": "Diploma / Any graduate",
+    "shift": "rotational",
+    "languages": [
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "meals",
+      "uniform",
+      "pf"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Deliver memorable guest experiences with our warm hospitality family!",
+    "company_logo": "https://ui-avatars.com/api/?name=Coastline Hotels&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Housekeeping Attendant",
+    "company": "Coastline Hotels",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 180000,
+    "salary_max": 280000,
+    "description": "Room cleaning to checklist, linen counts, and public-area upkeep. Morning shift majority.",
+    "skills": [
+      "housekeeping",
+      "room cleaning",
+      "linen",
+      "checklist"
+    ],
+    "experience_min": 0,
+    "experience_max": 5,
+    "category": "hospitality",
+    "industry": "hotels",
+    "education": "10th",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "meals",
+      "esi",
+      "pf"
+    ],
+    "openings": 10,
+    "photo_url": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Deliver memorable guest experiences with our warm hospitality family!",
+    "company_logo": "https://ui-avatars.com/api/?name=Coastline Hotels&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Primary School Teacher",
+    "company": "Vidya Niketan",
+    "location": "Mysuru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 280000,
+    "salary_max": 450000,
+    "description": "Teach English and EVS for classes 1 to 4. Lesson plans, parent meetings and activity periods.",
+    "skills": [
+      "teaching",
+      "lesson planning",
+      "classroom management",
+      "english"
+    ],
+    "experience_min": 1,
+    "experience_max": 8,
+    "category": "education",
+    "industry": "school",
+    "education": "B.Ed / D.El.Ed",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "summer break",
+      "transport"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Inspire the next generation of curious minds and bright futures!",
+    "company_logo": "https://ui-avatars.com/api/?name=Vidya Niketan&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Maths Tutor",
+    "company": "HomeSpark Tuition",
+    "location": "Delhi",
+    "remote": true,
+    "employment_type": "part-time",
+    "salary_min": 180000,
+    "salary_max": 360000,
+    "description": "Evening online tuitions for class 9 and 10 maths. Small batches, weekly tests.",
+    "skills": [
+      "maths",
+      "tutoring",
+      "cbse",
+      "online teaching"
+    ],
+    "experience_min": 0,
+    "experience_max": 6,
+    "category": "education",
+    "industry": "tutoring",
+    "education": "B.Sc / B.Tech",
+    "shift": "flexible",
+    "languages": [
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "remote",
+      "flexible hours"
+    ],
+    "openings": 8,
+    "photo_url": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Inspire the next generation of curious minds and bright futures!",
+    "company_logo": "https://ui-avatars.com/api/?name=HomeSpark Tuition&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Corporate Trainer",
+    "company": "Northstar SaaS",
+    "location": "Pune",
+    "remote": true,
+    "employment_type": "contract",
+    "salary_min": 700000,
+    "salary_max": 1200000,
+    "description": "Design and deliver product-training sessions for new customer-success hires. Three days a week.",
+    "skills": [
+      "training",
+      "facilitation",
+      "content design",
+      "saas"
+    ],
+    "experience_min": 4,
+    "experience_max": 12,
+    "category": "education",
+    "industry": "saas",
+    "education": "Any graduate",
+    "shift": "flexible",
+    "languages": [
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "remote",
+      "contract"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Inspire the next generation of curious minds and bright futures!",
+    "company_logo": "https://ui-avatars.com/api/?name=Northstar SaaS&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Warehouse Associate",
+    "company": "QuickKirana Dark Store",
+    "location": "Noida",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 216000,
+    "salary_max": 320000,
+    "description": "Unload inbound, put-away, and pick packed orders. Standing work, rotational shifts including nights.",
+    "skills": [
+      "warehouse",
+      "picking",
+      "loading",
+      "barcode"
+    ],
+    "experience_min": 0,
+    "experience_max": 4,
+    "category": "logistics",
+    "industry": "quick commerce",
+    "education": "10th",
+    "shift": "rotational",
+    "languages": [
+      "hindi"
+    ],
+    "benefits": [
+      "overtime",
+      "pf",
+      "esi",
+      "meal"
+    ],
+    "openings": 25,
+    "photo_url": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Keep commerce moving fast with a resilient, dynamic supply chain team!",
+    "company_logo": "https://ui-avatars.com/api/?name=QuickKirana Dark Store&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Delivery Partner",
+    "company": "QuickKirana Dark Store",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 420000,
+    "description": "Last-mile delivery on company two-wheeler within a 4 km radius. Valid licence required.",
+    "skills": [
+      "delivery",
+      "two wheeler",
+      "navigation",
+      "customer handling"
+    ],
+    "experience_min": 0,
+    "experience_max": 5,
+    "category": "logistics",
+    "industry": "quick commerce",
+    "education": "10th",
+    "shift": "rotational",
+    "languages": [
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "incentives",
+      "fuel",
+      "esi"
+    ],
+    "openings": 40,
+    "photo_url": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Keep commerce moving fast with a resilient, dynamic supply chain team!",
+    "company_logo": "https://ui-avatars.com/api/?name=QuickKirana Dark Store&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Dispatch Executive",
+    "company": "Deccan Distributors",
+    "location": "Hubballi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 260000,
+    "salary_max": 400000,
+    "description": "Plan daily vehicle loads, coordinate drivers, and update dealers on ETAs.",
+    "skills": [
+      "dispatch",
+      "fleet coordination",
+      "excel",
+      "transport"
+    ],
+    "experience_min": 1,
+    "experience_max": 6,
+    "category": "logistics",
+    "industry": "distribution",
+    "education": "12th / Any graduate",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "pf",
+      "mobile"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Keep commerce moving fast with a resilient, dynamic supply chain team!",
+    "company_logo": "https://ui-avatars.com/api/?name=Deccan Distributors&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Recruiter",
+    "company": "Pixelwave",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 500000,
+    "salary_max": 900000,
+    "description": "Full-cycle hiring for engineering and design. Sourcing, screens, and offer rollout.",
+    "skills": [
+      "recruiting",
+      "sourcing",
+      "screening",
+      "offer management"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "hr",
+    "industry": "consumer internet",
+    "education": "Any graduate",
+    "shift": "day",
+    "languages": [
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "health insurance",
+      "hybrid"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Help our people thrive and nurture a workplace everyone loves!",
+    "company_logo": "https://ui-avatars.com/api/?name=Pixelwave&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Payroll Executive",
+    "company": "Ledgerline Advisors",
+    "location": "Ahmedabad",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 320000,
+    "salary_max": 520000,
+    "description": "Monthly payroll, PF, ESI and full-and-final for a book of SME clients.",
+    "skills": [
+      "payroll",
+      "pf",
+      "esi",
+      "excel",
+      "statutory compliance"
+    ],
+    "experience_min": 2,
+    "experience_max": 7,
+    "category": "hr",
+    "industry": "bpo services",
+    "education": "B.Com",
+    "shift": "day",
+    "languages": [
+      "gujarati",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "mediclaim"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Help our people thrive and nurture a workplace everyone loves!",
+    "company_logo": "https://ui-avatars.com/api/?name=Ledgerline Advisors&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "HR Business Partner",
+    "company": "CityCare Hospital",
+    "location": "Kochi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 700000,
+    "salary_max": 1100000,
+    "description": "HRBP for nursing and admin. Hiring surges, grievance handling and shift-policy rollout.",
+    "skills": [
+      "hrbp",
+      "employee relations",
+      "hiring",
+      "hospital hr"
+    ],
+    "experience_min": 5,
+    "experience_max": 10,
+    "category": "hr",
+    "industry": "hospital",
+    "education": "MBA HR / Any graduate",
+    "shift": "day",
+    "languages": [
+      "malayalam",
+      "english"
+    ],
+    "benefits": [
+      "mediclaim",
+      "pf"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Help our people thrive and nurture a workplace everyone loves!",
+    "company_logo": "https://ui-avatars.com/api/?name=CityCare Hospital&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Performance Marketing Executive",
+    "company": "StyleMart",
+    "location": "Bengaluru",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 600000,
+    "salary_max": 1100000,
+    "description": "Run Meta and Google campaigns for an apparel brand. Weekly ROAS reviews with the founder.",
+    "skills": [
+      "performance marketing",
+      "meta ads",
+      "google ads",
+      "roas"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "marketing",
+    "industry": "apparel retail",
+    "education": "Any graduate",
+    "shift": "flexible",
+    "languages": [
+      "english",
+      "kannada"
+    ],
+    "benefits": [
+      "remote",
+      "health insurance"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Create captivating campaigns that spark joy and build lasting brand love!",
+    "company_logo": "https://ui-avatars.com/api/?name=StyleMart&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Content Writer",
+    "company": "Bhasha Tech",
+    "location": "Bengaluru",
+    "remote": true,
+    "employment_type": "contract",
+    "salary_min": 400000,
+    "salary_max": 700000,
+    "description": "Write Hindi and English product copy and help articles for an Indic language app.",
+    "skills": [
+      "content writing",
+      "hindi",
+      "seo",
+      "social media"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "marketing",
+    "industry": "ai",
+    "education": "Any graduate",
+    "shift": "flexible",
+    "languages": [
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "remote"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Create captivating campaigns that spark joy and build lasting brand love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Bhasha Tech&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Brand Executive",
+    "company": "Namma FMCG",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 550000,
+    "salary_max": 950000,
+    "description": "In-store branding, festival campaigns and distributor communication for a regional snacks brand.",
+    "skills": [
+      "brand",
+      "trade marketing",
+      "campaigns",
+      "vendor coordination"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "marketing",
+    "industry": "fmcg",
+    "education": "Any graduate / MBA",
+    "shift": "day",
+    "languages": [
+      "hindi",
+      "english",
+      "marathi"
+    ],
+    "benefits": [
+      "pf",
+      "mediclaim"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Create captivating campaigns that spark joy and build lasting brand love!",
+    "company_logo": "https://ui-avatars.com/api/?name=Namma FMCG&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Voice Process Associate",
+    "company": "Helpline BPO",
+    "location": "Jaipur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 220000,
+    "salary_max": 320000,
+    "description": "Inbound Hindi voice support for a telecom account. Night shift, rotational week offs.",
+    "skills": [
+      "voice process",
+      "customer support",
+      "telecom",
+      "crm"
+    ],
+    "experience_min": 0,
+    "experience_max": 3,
+    "category": "support",
+    "industry": "bpo",
+    "education": "12th / Any graduate",
+    "shift": "night",
+    "languages": [
+      "hindi"
+    ],
+    "benefits": [
+      "night allowance",
+      "pf",
+      "transport"
+    ],
+    "openings": 40,
+    "photo_url": "https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the friendly, empathetic hero our customers rely on every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=Helpline BPO&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Chat Support Executive",
+    "company": "Northstar SaaS",
+    "location": "Indore",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 300000,
+    "salary_max": 480000,
+    "description": "English chat support for SMB customers. Tickets, how-to replies, and escalation notes.",
+    "skills": [
+      "chat support",
+      "tickets",
+      "written english",
+      "saas"
+    ],
+    "experience_min": 0,
+    "experience_max": 3,
+    "category": "support",
+    "industry": "saas",
+    "education": "Any graduate",
+    "shift": "rotational",
+    "languages": [
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "remote",
+      "health insurance"
+    ],
+    "openings": 8,
+    "photo_url": "https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the friendly, empathetic hero our customers rely on every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=Northstar SaaS&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Customer Support - Kannada",
+    "company": "Kaveri Pay",
+    "location": "Mangaluru",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 280000,
+    "salary_max": 420000,
+    "description": "Help merchants with QR payments and settlement queries. Kannada first, Hindi and English welcome.",
+    "skills": [
+      "customer support",
+      "payments",
+      "kannada",
+      "crm"
+    ],
+    "experience_min": 0,
+    "experience_max": 4,
+    "category": "support",
+    "industry": "fintech",
+    "education": "12th / Any graduate",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "meal",
+      "incentives"
+    ],
+    "openings": 10,
+    "photo_url": "https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Be the friendly, empathetic hero our customers rely on every day!",
+    "company_logo": "https://ui-avatars.com/api/?name=Kaveri Pay&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Junior Advocate",
+    "company": "Reddy Chambers",
+    "location": "Hyderabad",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 360000,
+    "salary_max": 600000,
+    "description": "Drafting, filing and briefing for civil and consumer matters. Court attendance three days a week.",
+    "skills": [
+      "drafting",
+      "litigation",
+      "legal research",
+      "court filing"
+    ],
+    "experience_min": 0,
+    "experience_max": 3,
+    "category": "legal",
+    "industry": "law firm",
+    "education": "LLB",
+    "shift": "day",
+    "languages": [
+      "telugu",
+      "english"
+    ],
+    "benefits": [
+      "court allowance"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Advise leadership and champion rigorous, ethical legal craftsmanship!",
+    "company_logo": "https://ui-avatars.com/api/?name=Reddy Chambers&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Compliance Counsel",
+    "company": "Suraksha Life",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 1400000,
+    "salary_max": 2200000,
+    "description": "Review insurance product wordings and IRDAI filings. Coordinate with actuarial and distribution.",
+    "skills": [
+      "compliance",
+      "contracts",
+      "irdai",
+      "legal counsel"
+    ],
+    "experience_min": 4,
+    "experience_max": 10,
+    "category": "legal",
+    "industry": "insurance",
+    "education": "LLB",
+    "shift": "day",
+    "languages": [
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "mediclaim",
+      "pf",
+      "bonus"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Advise leadership and champion rigorous, ethical legal craftsmanship!",
+    "company_logo": "https://ui-avatars.com/api/?name=Suraksha Life&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Electrician",
+    "company": "Sankalp Infra",
+    "location": "Ahmedabad",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 420000,
+    "description": "Site wiring, DB installation and testing for commercial fit-outs. ITI wireman preferred. Own tools a plus.",
+    "skills": [
+      "electrician",
+      "wiring",
+      "db",
+      "testing",
+      "site work"
+    ],
+    "experience_min": 2,
+    "experience_max": 10,
+    "category": "trades",
+    "industry": "construction",
+    "education": "ITI Electrician",
+    "shift": "day",
+    "languages": [
+      "gujarati",
+      "hindi"
+    ],
+    "benefits": [
+      "pf",
+      "esi",
+      "site allowance"
+    ],
+    "openings": 8,
+    "photo_url": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Take pride in masterful craft and building infrastructure that lasts!",
+    "company_logo": "https://ui-avatars.com/api/?name=Sankalp Infra&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Plumber",
+    "company": "CityCare Hospital",
+    "location": "Kochi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 220000,
+    "salary_max": 360000,
+    "description": "Maintenance plumbing across wards and the canteen. Emergency call-outs on a rota.",
+    "skills": [
+      "plumbing",
+      "maintenance",
+      "pipes",
+      "leak repair"
+    ],
+    "experience_min": 2,
+    "experience_max": 12,
+    "category": "trades",
+    "industry": "hospital",
+    "education": "ITI / experience",
+    "shift": "rotational",
+    "languages": [
+      "malayalam"
+    ],
+    "benefits": [
+      "esi",
+      "pf",
+      "call-out pay"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Take pride in masterful craft and building infrastructure that lasts!",
+    "company_logo": "https://ui-avatars.com/api/?name=CityCare Hospital&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Carpenter",
+    "company": "StyleMart",
+    "location": "Bengaluru",
+    "remote": false,
+    "employment_type": "contract",
+    "salary_min": 280000,
+    "salary_max": 480000,
+    "description": "In-store fixture carpentry and repairs across three Bengaluru stores. Contract, tools provided on site.",
+    "skills": [
+      "carpentry",
+      "fixtures",
+      "measurements",
+      "finishing"
+    ],
+    "experience_min": 3,
+    "experience_max": 15,
+    "category": "trades",
+    "industry": "retail",
+    "education": "ITI / experience",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "contract"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Take pride in masterful craft and building infrastructure that lasts!",
+    "company_logo": "https://ui-avatars.com/api/?name=StyleMart&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Agronomist",
+    "company": "Deccan Distributors",
+    "location": "Davangere",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 400000,
+    "salary_max": 700000,
+    "description": "Farmer meetings and crop-advisory demos for a fertiliser and seed line. Field travel four days a week.",
+    "skills": [
+      "agronomy",
+      "farmer meetings",
+      "crop advisory",
+      "demos"
+    ],
+    "experience_min": 1,
+    "experience_max": 7,
+    "category": "agriculture",
+    "industry": "agri inputs",
+    "education": "B.Sc Agriculture",
+    "shift": "day",
+    "languages": [
+      "kannada",
+      "hindi"
+    ],
+    "benefits": [
+      "bike",
+      "fuel",
+      "pf"
+    ],
+    "openings": 4,
+    "photo_url": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Nourish communities and champion sustainable agricultural innovation!",
+    "company_logo": "https://ui-avatars.com/api/?name=Deccan Distributors&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Dairy Supervisor",
+    "company": "Nandini Partners",
+    "location": "Hassan",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 380000,
+    "description": "Morning milk collection route, fat/SNF testing, and farmer payment reconciliation.",
+    "skills": [
+      "dairy",
+      "milk collection",
+      "quality testing",
+      "farmer payments"
+    ],
+    "experience_min": 1,
+    "experience_max": 8,
+    "category": "agriculture",
+    "industry": "dairy",
+    "education": "12th / Diploma",
+    "shift": "day",
+    "languages": [
+      "kannada"
+    ],
+    "benefits": [
+      "pf",
+      "esi"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Nourish communities and champion sustainable agricultural innovation!",
+    "company_logo": "https://ui-avatars.com/api/?name=Nandini Partners&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Graphic Designer",
+    "company": "StyleMart",
+    "location": "Mumbai",
+    "remote": true,
+    "employment_type": "full-time",
+    "salary_min": 450000,
+    "salary_max": 800000,
+    "description": "Campaign creatives, lookbooks and marketplace images for an apparel label. Figma and Photoshop.",
+    "skills": [
+      "graphic design",
+      "figma",
+      "photoshop",
+      "social creatives"
+    ],
+    "experience_min": 2,
+    "experience_max": 6,
+    "category": "creative",
+    "industry": "apparel retail",
+    "education": "Any graduate / design diploma",
+    "shift": "flexible",
+    "languages": [
+      "english",
+      "hindi"
+    ],
+    "benefits": [
+      "remote",
+      "health insurance"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Turn bold aesthetic visions into breathtaking designs and stories!",
+    "company_logo": "https://ui-avatars.com/api/?name=StyleMart&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Video Editor",
+    "company": "Bhasha Tech",
+    "location": "Bengaluru",
+    "remote": true,
+    "employment_type": "contract",
+    "salary_min": 400000,
+    "salary_max": 720000,
+    "description": "Cut short-form product videos in Hindi and Kannada. Captions, music and weekly batch delivery.",
+    "skills": [
+      "video editing",
+      "premiere",
+      "captions",
+      "short form"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "creative",
+    "industry": "ai",
+    "education": "Any graduate",
+    "shift": "flexible",
+    "languages": [
+      "kannada",
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "remote"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Turn bold aesthetic visions into breathtaking designs and stories!",
+    "company_logo": "https://ui-avatars.com/api/?name=Bhasha Tech&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Operations Executive",
+    "company": "Helpline BPO",
+    "location": "Jaipur",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 300000,
+    "salary_max": 480000,
+    "description": "Floor admin: roster adherence, transport logs, and daily shrinkage of no-shows for a 200-seat centre.",
+    "skills": [
+      "operations",
+      "roster",
+      "admin",
+      "excel",
+      "reporting"
+    ],
+    "experience_min": 1,
+    "experience_max": 5,
+    "category": "operations",
+    "industry": "bpo",
+    "education": "Any graduate",
+    "shift": "rotational",
+    "languages": [
+      "hindi",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "transport"
+    ],
+    "openings": 3,
+    "photo_url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Power the operational backbone that keeps our company running seamlessly!",
+    "company_logo": "https://ui-avatars.com/api/?name=Helpline BPO&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Facilities Executive",
+    "company": "CityCare Hospital",
+    "location": "Kochi",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 280000,
+    "salary_max": 450000,
+    "description": "Vendors for housekeeping, biomedical waste and canteen. Daily rounds and complaint closure.",
+    "skills": [
+      "facilities",
+      "vendor management",
+      "admin",
+      "complaints"
+    ],
+    "experience_min": 2,
+    "experience_max": 7,
+    "category": "operations",
+    "industry": "hospital",
+    "education": "Any graduate",
+    "shift": "day",
+    "languages": [
+      "malayalam",
+      "english"
+    ],
+    "benefits": [
+      "pf",
+      "meals",
+      "mediclaim"
+    ],
+    "openings": 1,
+    "photo_url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Power the operational backbone that keeps our company running seamlessly!",
+    "company_logo": "https://ui-avatars.com/api/?name=CityCare Hospital&background=1c1612&color=fffdf8&bold=true&size=128"
+  },
+  {
+    "title": "Back Office Executive",
+    "company": "Mehta & Kulkarni",
+    "location": "Mumbai",
+    "remote": false,
+    "employment_type": "full-time",
+    "salary_min": 240000,
+    "salary_max": 380000,
+    "description": "Filing, scanning, appointment scheduling and client follow-ups for a CA firm.",
+    "skills": [
+      "back office",
+      "data entry",
+      "filing",
+      "scheduling",
+      "excel"
+    ],
+    "experience_min": 0,
+    "experience_max": 4,
+    "category": "operations",
+    "industry": "ca firm",
+    "education": "12th / B.Com",
+    "shift": "day",
+    "languages": [
+      "hindi",
+      "marathi",
+      "english"
+    ],
+    "benefits": [
+      "pf"
+    ],
+    "openings": 2,
+    "photo_url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    "hiring_quote": "Power the operational backbone that keeps our company running seamlessly!",
+    "company_logo": "https://ui-avatars.com/api/?name=Mehta & Kulkarni&background=1c1612&color=fffdf8&bold=true&size=128"
+  }
 ]

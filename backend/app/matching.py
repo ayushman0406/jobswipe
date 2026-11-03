@@ -18,6 +18,51 @@ LANG_NAME = {"en": "English", "hi": "Hindi", "kn": "Kannada"}
 _ROLE_STOP = {"and", "the", "for", "with", "senior", "junior", "lead", "assistant", "executive"}
 
 
+CATEGORY_PHOTOS = {
+    "technology": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    "sales": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80",
+    "management": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80",
+    "retail": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
+    "mechanical": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    "finance": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+    "healthcare": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+    "hospitality": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    "education": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    "logistics": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+    "hr": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80",
+    "marketing": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=800&q=80",
+    "support": "https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=800&q=80",
+    "legal": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=800&q=80",
+    "trades": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
+    "agriculture": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80",
+    "creative": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=800&q=80",
+    "operations": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+}
+DEFAULT_PHOTO = "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80"
+
+CATEGORY_INVITES = {
+    "technology": "Come build cutting-edge systems and scale impactful software with our team!",
+    "sales": "Drive exponential growth and represent products our customers truly love!",
+    "management": "Lead high-impact initiatives and empower passionate people to succeed!",
+    "retail": "Be the welcoming face our community looks forward to visiting every day!",
+    "mechanical": "Craft world-class precision engineering and push machinery limits with us!",
+    "finance": "Shape financial strategy and bring precision to high-stakes decisions!",
+    "healthcare": "Provide compassionate, transformative care and touch real lives daily!",
+    "hospitality": "Deliver memorable guest experiences with our warm hospitality family!",
+    "education": "Inspire the next generation of curious minds and bright futures!",
+    "logistics": "Keep commerce moving fast with a resilient, dynamic supply chain team!",
+    "hr": "Help our people thrive and nurture a workplace everyone loves!",
+    "marketing": "Create captivating campaigns that spark joy and build lasting brand love!",
+    "support": "Be the friendly, empathetic hero our customers rely on every day!",
+    "legal": "Advise leadership and champion rigorous, ethical legal craftsmanship!",
+    "trades": "Take pride in masterful craft and building infrastructure that lasts!",
+    "agriculture": "Nourish communities and champion sustainable agricultural innovation!",
+    "creative": "Turn bold aesthetic visions into breathtaking designs and stories!",
+    "operations": "Power the operational backbone that keeps our company running seamlessly!",
+}
+DEFAULT_INVITE = "We're expanding fast and would love for you to join our growing team!"
+
+
 def _canon(s: str) -> str:
     c = re.sub(r"[^a-z0-9+#]", "", s.lower())
     if c.endswith("js") and len(c) > 4:
@@ -26,6 +71,11 @@ def _canon(s: str) -> str:
 
 
 def job_to_dict(j: Job) -> dict:
+    cat = (j.category or "").lower()
+    photo = j.photo_url or CATEGORY_PHOTOS.get(cat, DEFAULT_PHOTO)
+    quote = j.hiring_quote or CATEGORY_INVITES.get(cat, DEFAULT_INVITE)
+    logo = j.company_logo or f"https://ui-avatars.com/api/?name={j.company or 'Company'}&background=1c1612&color=fffdf8&bold=true&size=128"
+
     return {
         "job_id": j.id, "title": j.title, "company": j.company, "location": j.location,
         "remote": j.remote, "employment_type": j.employment_type,
@@ -36,6 +86,9 @@ def job_to_dict(j: Job) -> dict:
         "education": j.education or "", "shift": j.shift or "",
         "languages": j.languages or [], "benefits": j.benefits or [],
         "openings": j.openings or 1,
+        "photo_url": photo,
+        "company_logo": logo,
+        "hiring_quote": quote,
     }
 
 
