@@ -459,6 +459,14 @@ nav.main-nav {
   margin: 0 0 6px;
   font-size: 1.8rem;
 }
+.boot-kicker {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
 .boot-status {
   color: var(--muted);
   font-size: 0.92rem;

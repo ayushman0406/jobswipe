@@ -1,3 +1,4 @@
+import re
 import fitz  # PyMuPDF
 
 from .llm import json_chat
@@ -50,6 +51,30 @@ def resume_reader(pdf_bytes: bytes) -> dict:
 
     if not isinstance(r.get("links"), dict):
         r["links"] = {}
+
+    # Contact regex extraction fallbacks if LLM omitted them
+    if not r.get("email"):
+        em = re.search(r"[\w\.-]+@[\w\.-]+\.\w+", text)
+        if em:
+            r["email"] = em.group(0).strip()
+
+    if not r.get("phone"):
+        ph = re.search(r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|(?:\+?91[\-\s]?)?[6-9]\d{9}", text)
+        if ph:
+            r["phone"] = ph.group(0).strip()
+
+    if not r["links"].get("linkedin"):
+        li = re.search(r"https?://(?:www\.)?linkedin\.com/in/[\w\-]+|linkedin\.com/in/[\w\-]+", text, re.IGNORECASE)
+        if li:
+            raw_li = li.group(0).strip()
+            r["links"]["linkedin"] = raw_li if raw_li.startswith("http") else f"https://{raw_li}"
+
+    if not r["links"].get("github"):
+        gh = re.search(r"https?://(?:www\.)?github\.com/[\w\-]+|github\.com/[\w\-]+", text, re.IGNORECASE)
+        if gh:
+            raw_gh = gh.group(0).strip()
+            r["links"]["github"] = raw_gh if raw_gh.startswith("http") else f"https://{raw_gh}"
+
     if not isinstance(r.get("categorized_skills"), dict):
         r["categorized_skills"] = {
             "technical": r["skills"],

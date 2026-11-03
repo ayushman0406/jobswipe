@@ -86,13 +86,14 @@ def _user_out(u: User) -> dict:
     resume = u.resume_json or {}
     return {
         "id": u.id, "name": u.name, "email": u.email, "preferred_lang": u.preferred_lang,
-        "has_resume": bool(u.resume_json),
+        "has_resume": bool(u.resume_json or u.resume_latex),
         "ats_score": u.ats_score,
         "has_latex": bool(u.resume_latex),
+        "resume_latex": u.resume_latex,
         "search_state": u.search_state or {"filters": {}, "focus": ""},
         "resume": {
-            "name": resume.get("name"),
-            "email": resume.get("email"),
+            "name": resume.get("name") or u.name,
+            "email": resume.get("email") or u.email,
             "phone": resume.get("phone"),
             "location": resume.get("location"),
             "summary": resume.get("summary"),
@@ -148,15 +149,15 @@ def upload_resume(uid: int, file: UploadFile = File(...), s: Session = Depends(g
 @app.get("/users/{uid}/resume/ats")
 def get_resume_ats(uid: int, s: Session = Depends(get_session)):
     u = _user(s, uid)
-    if not u.resume_json:
+    if not u.resume_json and not u.resume_latex:
         raise HTTPException(404, "No resume uploaded yet")
     if not u.ats_score or not u.resume_latex:
-        latex = u.resume_latex or ats_mod.generate_latex_resume(u.resume_json)
-        score = ats_mod.calculate_ats_score(u.resume_json, latex)
+        latex = u.resume_latex or ats_mod.generate_latex_resume(u.resume_json or {})
+        score = ats_mod.calculate_ats_score(u.resume_json or {}, latex)
         u.resume_latex = latex
         u.ats_score = score
         s.add(u); s.commit()
-    return {"ats": u.ats_score, "latex": u.resume_latex}
+    return {"ats": u.ats_score, "latex": u.resume_latex, "resume": _user_out(u)["resume"]}
 
 
 class LatexIn(BaseModel):
@@ -167,9 +168,29 @@ class LatexIn(BaseModel):
 def update_resume_latex(uid: int, body: LatexIn, s: Session = Depends(get_session)):
     u = _user(s, uid)
     u.resume_latex = body.latex
-    u.ats_score = ats_mod.calculate_ats_score(u.resume_json or {}, body.latex)
+    parsed = ats_mod.parse_latex_resume(body.latex)
+    curr = dict(u.resume_json or {})
+    for k in ("name", "email", "phone", "location", "summary", "roles", "education", "projects", "certifications"):
+        if parsed.get(k):
+            curr[k] = parsed[k]
+    if parsed.get("skills"):
+        curr["skills"] = parsed["skills"]
+    if parsed.get("categorized_skills"):
+        curr["categorized_skills"] = parsed["categorized_skills"]
+    if parsed.get("links"):
+        curr["links"] = {**(curr.get("links") or {}), **parsed["links"]}
+    u.resume_json = curr
+    u.ats_score = ats_mod.calculate_ats_score(curr, body.latex)
+    try:
+        vec_text = resume_mod.resume_to_text(curr)
+        if len(vec_text.strip()) > 20:
+            vec = to_bytes(embed([vec_text])[0])
+            u.resume_vec = vec
+            u.pref_vec = vec
+    except Exception:
+        pass
     s.add(u); s.commit()
-    return {"ok": True, "ats": u.ats_score, "latex": u.resume_latex}
+    return {"ok": True, "ats": u.ats_score, "latex": u.resume_latex, "resume": _user_out(u)["resume"]}
 
 
 class ResumeChatIn(BaseModel):
@@ -184,12 +205,44 @@ def improve_resume_chat(uid: int, body: ResumeChatIn, s: Session = Depends(get_s
     latex = body.current_latex or u.resume_latex or ats_mod.generate_latex_resume(u.resume_json or {})
     result = ats_mod.chat_improve_resume(body.message, latex, u.resume_json or {}, body.chat_history)
     u.resume_latex = result["latex"]
-    new_ats = ats_mod.calculate_ats_score(u.resume_json or {}, result["latex"])
+
+    parsed = ats_mod.parse_latex_resume(result["latex"])
+    curr = dict(u.resume_json or {})
+    for k in ("name", "email", "phone", "location", "summary", "roles", "education", "projects", "certifications"):
+        if parsed.get(k):
+            curr[k] = parsed[k]
+    if parsed.get("skills"):
+        curr["skills"] = parsed["skills"]
+    if parsed.get("categorized_skills"):
+        curr["categorized_skills"] = parsed["categorized_skills"]
+    if parsed.get("links"):
+        curr["links"] = {**(curr.get("links") or {}), **parsed["links"]}
+    u.resume_json = curr
+
+    new_ats = ats_mod.calculate_ats_score(curr, result["latex"])
     if result.get("estimated_score") and result["estimated_score"] > new_ats["overall_score"]:
         new_ats["overall_score"] = min(100, max(new_ats["overall_score"], int(result["estimated_score"])))
+        if new_ats["overall_score"] >= 88:
+            new_ats["rating"] = "Exceptional"
+        elif new_ats["overall_score"] >= 75:
+            new_ats["rating"] = "Strong"
+        elif new_ats["overall_score"] >= 60:
+            new_ats["rating"] = "Good"
+        else:
+            new_ats["rating"] = "Needs Work"
     u.ats_score = new_ats
+
+    try:
+        vec_text = resume_mod.resume_to_text(curr)
+        if len(vec_text.strip()) > 20:
+            vec = to_bytes(embed([vec_text])[0])
+            u.resume_vec = vec
+            u.pref_vec = vec
+    except Exception:
+        pass
+
     s.add(u); s.commit()
-    return {**result, "ats": new_ats}
+    return {**result, "ats": new_ats, "latex": u.resume_latex, "resume": _user_out(u)["resume"]}
 
 
 def _can_rank(u: User) -> bool:

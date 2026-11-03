@@ -36,8 +36,9 @@ export default function BootLoader({ title = "JobSwipe", subtitle }) {
 
       <div className="boot-content">
         <h1 className="boot-brand">{title}</h1>
+        {subtitle && <p className="boot-kicker">{subtitle}</p>}
         <p className="boot-status" key={stepIdx}>
-          {subtitle || STEPS[stepIdx]}
+          {STEPS[stepIdx]}
         </p>
         <div className="boot-progress" aria-hidden="true">
           <div className="boot-bar" />

@@ -1,30 +1,196 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
+
+function parseClientLatex(tex) {
+  if (!tex || typeof tex !== "string") return null;
+
+  function unescapeLatex(s) {
+    if (!s) return "";
+    return s
+      .replace(/\\&/g, "&")
+      .replace(/\\%/g, "%")
+      .replace(/\\\$/g, "$")
+      .replace(/\\_/g, "_")
+      .replace(/\\#/g, "#")
+      .replace(/\\\{/g, "{")
+      .replace(/\\\}/g, "}")
+      .replace(/\\textasciitilde\{\}/g, "~")
+      .replace(/\\textasciicircum\{\}/g, "^")
+      .replace(/\\textbackslash\{\}/g, "\\");
+  }
+
+  function strip(s) {
+    if (!s) return "";
+    return unescapeLatex(
+      s
+        .replace(/%.*$/gm, "")
+        .replace(/\\href\{[^}]*\}\{([^}]*)\}/g, "$1")
+        .replace(/\\[a-zA-Z]+\{([^}]*)\}/g, "$1")
+        .replace(/\\[a-zA-Z]+\*?(?:\[[^\]]*\])?(?:\{[^}]*\})?/g, "")
+        .replace(/\\\\/g, "\n")
+    ).trim();
+  }
+
+  const result = {
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    links: {},
+    summary: "",
+    skills: [],
+    roles: [],
+    projects: [],
+    education: [],
+    certifications: [],
+  };
+
+  const nameMatch = tex.match(/\{\\(?:LARGE|Large|Huge)\s*\\textbf\{([^}]+)\}\}/) || tex.match(/\\textbf\{([^}]+)\}/);
+  if (nameMatch) result.name = strip(nameMatch[1]);
+
+  const emailMatch = tex.match(/mailto:([\w.-]+@[\w.-]+\.\w+)/) || tex.match(/[\w.-]+@[\w.-]+\.\w+/);
+  if (emailMatch) result.email = emailMatch[1] || emailMatch[0];
+
+  const phoneMatch = tex.match(/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|(?:\+?91[\-\s]?)?[6-9]\d{9}/);
+  if (phoneMatch) result.phone = phoneMatch[0].trim();
+
+  const liMatch = tex.match(/\\href\{([^}]*linkedin\.com[^}]*)\}/i) || tex.match(/https?:\/\/(?:www\.)?linkedin\.com\/in\/[\w-]+/i);
+  if (liMatch) result.links.linkedin = liMatch[1] || liMatch[0];
+
+  const ghMatch = tex.match(/\\href\{([^}]*github\.com[^}]*)\}/i) || tex.match(/https?:\/\/(?:www\.)?github\.com\/[\w-]+/i);
+  if (ghMatch) result.links.github = ghMatch[1] || ghMatch[0];
+
+  const portMatch = tex.match(/\\href\{([^}]+)\}\{(?:Portfolio|Website)\}/i);
+  if (portMatch) result.links.portfolio = portMatch[1];
+
+  const sections = tex.split(/\\section\*?\{([^}]+)\}/);
+  for (let i = 1; i < sections.length; i += 2) {
+    const title = sections[i].toUpperCase().trim();
+    const content = sections[i + 1] || "";
+
+    if (/SUMMARY|PROFILE|OBJECTIVE/.test(title)) {
+      result.summary = strip(content);
+    } else if (/SKILL|COMPETENC/.test(title)) {
+      const cleaned = strip(content);
+      const items = [];
+      const junk = new Set(["document", "article", "center", "itemize", "enumerate"]);
+      cleaned.split("\n").forEach((line) => {
+        const parts = line.split(/[:\-]/);
+        const chunk = parts[parts.length - 1];
+        chunk.split(/[,•|;]+/).forEach((token) => {
+          const t = token.trim();
+          if (t && !junk.has(t.toLowerCase()) && !/^\d+pt$/.test(t) && t.length > 1) {
+            items.push(t);
+          }
+        });
+      });
+      result.skills = Array.from(new Set(items));
+    } else if (/EXPERIENCE|WORK|EMPLOYMENT|HISTORY/.test(title)) {
+      const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*(?:\$\|\$|\|)\s*\\textit\{)/);
+      blocks.forEach((b) => {
+        if (!b.trim() || b.trim().startsWith("%")) return;
+        const tm = b.match(/\\textbf\{([^}]+)\}\s*(?:\$\|\$|\|)\s*\\textit\{([^}]+)\}(?:[^\\]*?\\hfill\s*([^\\]+))?/);
+        const itemMatches = [...b.matchAll(/\\item\s*([^\n\\]+)/g)].map((m) => strip(m[1])).filter(Boolean);
+        if (tm) {
+          result.roles.push({
+            title: strip(tm[1]),
+            company: strip(tm[2]),
+            start: strip(tm[3] || ""),
+            highlights: itemMatches,
+          });
+        }
+      });
+    } else if (/PROJECT/.test(title)) {
+      const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}(?:\$\|\$|\||\\\\))/);
+      blocks.forEach((b) => {
+        if (!b.trim() || b.trim().startsWith("%")) return;
+        const pm = b.match(/\\textbf\{([^}]+)\}/);
+        const itemMatches = [...b.matchAll(/\\item\s*([^\n\\]+)/g)].map((m) => strip(m[1])).filter(Boolean);
+        if (pm) {
+          result.projects.push({
+            name: strip(pm[1]),
+            description: itemMatches.join(" ") || strip(b),
+            highlights: itemMatches,
+          });
+        }
+      });
+    } else if (/EDUCATION/.test(title)) {
+      const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*\\hfill)/);
+      blocks.forEach((b) => {
+        if (!b.trim() || b.trim().startsWith("%")) return;
+        const im = b.match(/\\textbf\{([^}]+)\}(?:[^\\]*?\\hfill\s*([^\\]+))?/);
+        const dm = b.match(/\\textit\{([^}]+)\}/);
+        if (im) {
+          result.education.push({
+            institution: strip(im[1]),
+            year: strip(im[2] || ""),
+            degree: strip(dm ? dm[1] : ""),
+          });
+        }
+      });
+    } else if (/CERTIFICATION|ACHIEVEMENT/.test(title)) {
+      const itemMatches = [...content.matchAll(/\\item\s*([^\n\\]+)/g)].map((m) => strip(m[1])).filter(Boolean);
+      itemMatches.forEach((itm) => result.certifications.push({ name: itm }));
+    }
+  }
+
+  return result;
+}
 
 export default function ResumeStudio({ user, t, onUpdateUser }) {
   const [ats, setAts] = useState(user.ats_score || null);
   const [latex, setLatex] = useState(user.resume_latex || "");
-  const [loading, setLoading] = useState(!user.ats_score);
+  const [loading, setLoading] = useState(!user.ats_score && !user.resume_latex);
   const [chatting, setChatting] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [input, setInput] = useState("");
   const [activeTab, setActiveTab] = useState("preview"); // 'preview' | 'latex'
   const [copied, setCopied] = useState(false);
+  const studioFileInputRef = useRef(null);
+
+  const initialGreeting = useMemo(() => {
+    if (ats?.improvements?.length) {
+      const top = ats.improvements.slice(0, 3);
+      const list = top.map((imp, i) => `${i + 1}. **${imp.title}**: ${imp.description}`).join("\n");
+      return `Welcome! Your resume ATS score is currently **${ats.overall_score || 0}/100 (${ats.rating || "Good"})**.\n\nHere are the top areas to improve:\n${list}\n\nWhat would you like to refine? Tell me what to change or pick a prompt below!`;
+    }
+    return (
+      t.coachGreeting ||
+      "Hi! I'm your AI Resume Coach. I've analyzed your resume and generated an ATS-optimized LaTeX version. What would you like to improve?"
+    );
+  }, [ats?.improvements, ats?.overall_score, ats?.rating, t.coachGreeting]);
+
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content:
-        t.coachGreeting ||
-        "Hi! I'm your AI Resume Coach. I've analyzed your resume and generated an ATS-optimized LaTeX version. What would you like to improve?",
-      quick_prompts: [
-        "Add quantifiable metrics (% & numbers) to my work experience",
-        "Add missing technical skills and tools",
-        "Refine executive summary for high ATS matching",
-      ],
+      content: initialGreeting,
+      quick_prompts: (ats?.improvements || []).slice(0, 3).map((imp) => imp.prompt).length
+        ? (ats?.improvements || []).slice(0, 3).map((imp) => imp.prompt)
+        : [
+            "Add quantifiable metrics (% & numbers) to my work experience",
+            "Add missing technical skills and tools",
+            "Refine executive summary for high ATS matching",
+          ],
     },
   ]);
 
   const chatEndRef = useRef(null);
+
+  // Sync greeting when ats loads
+  useEffect(() => {
+    if (ats?.improvements?.length && messages.length === 1 && messages[0].role === "assistant") {
+      const top = ats.improvements.slice(0, 3);
+      const list = top.map((imp, i) => `${i + 1}. **${imp.title}**: ${imp.description}`).join("\n");
+      setMessages([
+        {
+          role: "assistant",
+          content: `Welcome! Your resume ATS score is currently **${ats.overall_score || 0}/100 (${ats.rating || "Good"})**.\n\nHere are the top areas to improve:\n${list}\n\nWhat would you like to refine? Tell me what to change or pick a prompt below!`,
+          quick_prompts: top.map((imp) => imp.prompt),
+        },
+      ]);
+    }
+  }, [ats?.improvements, ats?.overall_score, ats?.rating]);
 
   useEffect(() => {
     if (!ats || !latex) {
@@ -34,7 +200,13 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
         .then((res) => {
           if (res.ats) setAts(res.ats);
           if (res.latex) setLatex(res.latex);
-          if (onUpdateUser) onUpdateUser({ ats_score: res.ats, resume_latex: res.latex });
+          if (onUpdateUser) {
+            onUpdateUser({
+              ats_score: res.ats,
+              resume_latex: res.latex,
+              resume: res.resume || user.resume,
+            });
+          }
         })
         .catch(() => {})
         .finally(() => setLoading(false));
@@ -44,6 +216,28 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatting]);
+
+  // Real-time client-side parsed resume for live preview
+  const displayResume = useMemo(() => {
+    const base = user.resume || {};
+    if (!latex) return base;
+    const parsed = parseClientLatex(latex);
+    if (!parsed) return base;
+    return {
+      ...base,
+      name: parsed.name || base.name || user.name,
+      email: parsed.email || base.email || user.email,
+      phone: parsed.phone || base.phone,
+      location: parsed.location || base.location,
+      summary: parsed.summary || base.summary,
+      links: { ...(base.links || {}), ...(parsed.links || {}) },
+      skills: parsed.skills?.length ? parsed.skills : (base.skills || []),
+      roles: parsed.roles?.length ? parsed.roles : (base.roles || []),
+      projects: parsed.projects?.length ? parsed.projects : (base.projects || []),
+      education: parsed.education?.length ? parsed.education : (base.education || []),
+      certifications: parsed.certifications?.length ? parsed.certifications : (base.certifications || []),
+    };
+  }, [latex, user.resume, user.name, user.email]);
 
   async function handleSend(textToSend) {
     const query = (textToSend || input).trim();
@@ -57,9 +251,13 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
     try {
       const res = await api.improveResumeChat(user.id, query, latex, newHistory);
       if (res.latex) setLatex(res.latex);
-      if (res.ats) {
-        setAts(res.ats);
-        if (onUpdateUser) onUpdateUser({ ats_score: res.ats, resume_latex: res.latex });
+      if (res.ats) setAts(res.ats);
+      if (onUpdateUser) {
+        onUpdateUser({
+          ats_score: res.ats || ats,
+          resume_latex: res.latex || latex,
+          resume: res.resume || user.resume,
+        });
       }
 
       setMessages((prev) => [
@@ -89,11 +287,41 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
     try {
       const res = await api.updateLatex(user.id, latex);
       if (res.ats) setAts(res.ats);
-      if (onUpdateUser) onUpdateUser({ ats_score: res.ats, resume_latex: latex });
+      if (onUpdateUser) {
+        onUpdateUser({
+          ats_score: res.ats,
+          resume_latex: latex,
+          resume: res.resume || user.resume,
+        });
+      }
     } catch (e) {
       alert("Failed to save LaTeX: " + e.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleStudioUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const res = await api.uploadResume(user.id, file);
+      if (res.ats) setAts(res.ats);
+      if (res.latex) setLatex(res.latex);
+      if (onUpdateUser) {
+        onUpdateUser({
+          has_resume: true,
+          ats_score: res.ats,
+          resume_latex: res.latex,
+          resume: res.resume,
+        });
+      }
+    } catch (err) {
+      alert("Upload failed: " + err.message);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
     }
   }
 
@@ -108,7 +336,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${(user.name || "resume").toLowerCase().replace(/\s+/g, "_")}.tex`;
+    a.download = `${(displayResume.name || user.name || "resume").toLowerCase().replace(/\s+/g, "_")}.tex`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -116,7 +344,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
   }
 
   const score = ats?.overall_score ?? 0;
-  const rating = ats?.rating || "Pending";
+  const rating = ats?.rating || (latex ? "Good" : "No Resume");
   const scoreColor = score >= 80 ? "var(--good)" : score >= 60 ? "var(--super)" : "var(--accent)";
 
   return (
@@ -271,7 +499,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={t.chatPlaceholder}
+              placeholder={t.chatPlaceholder || "Ask AI to add skills, rewrite bullets, quantify metrics…"}
               disabled={chatting}
             />
             <button type="submit" className="solid send-btn" disabled={chatting || !input.trim()}>
@@ -281,7 +509,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
         </div>
       </section>
 
-      {/* RIGHT COLUMN: Interactive LaTeX Editor & Live Preview */}
+      {/* RIGHT COLUMN: Interactive LaTeX Editor & Live Formatted Preview */}
       <section className="studio-right">
         <div className="editor-card">
           <header className="editor-header">
@@ -303,6 +531,22 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
             </div>
 
             <div className="editor-actions">
+              <input
+                type="file"
+                ref={studioFileInputRef}
+                style={{ display: "none" }}
+                accept="application/pdf,.pdf"
+                onChange={handleStudioUpload}
+              />
+              <button
+                type="button"
+                className="ghost-btn"
+                onClick={() => studioFileInputRef.current?.click()}
+                disabled={uploading}
+                title="Upload PDF Resume"
+              >
+                {uploading ? "Parsing…" : "📤 Upload PDF"}
+              </button>
               <button type="button" className="ghost-btn" onClick={copyToClipboard} title="Copy LaTeX code">
                 {copied ? t.copied : t.copyLatex}
               </button>
@@ -326,6 +570,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
                   onChange={(e) => setLatex(e.target.value)}
                   spellCheck="false"
                   aria-label="LaTeX Resume Code"
+                  placeholder="% Paste or write your LaTeX resume here..."
                 />
               </div>
             ) : (
@@ -333,47 +578,50 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
                 {/* Formatted Resume Preview */}
                 <article className="resume-paper">
                   <header className="res-header">
-                    <h1>{user.resume?.name || user.name || "Your Name"}</h1>
+                    <h1>{displayResume.name || "Your Name"}</h1>
                     <p className="res-contact">
                       {[
-                        user.resume?.email || user.email,
-                        user.resume?.phone,
-                        user.resume?.location,
-                        user.resume?.links?.linkedin,
-                        user.resume?.links?.github,
+                        displayResume.email,
+                        displayResume.phone,
+                        displayResume.location,
+                        displayResume.links?.linkedin,
+                        displayResume.links?.github,
+                        displayResume.links?.portfolio,
                       ]
                         .filter(Boolean)
                         .join("  •  ")}
                     </p>
                   </header>
 
-                  {user.resume?.summary && (
+                  {displayResume.summary && (
                     <section className="res-section">
                       <h3>PROFESSIONAL SUMMARY</h3>
-                      <p className="res-summary">{user.resume.summary}</p>
+                      <p className="res-summary">{displayResume.summary}</p>
                     </section>
                   )}
 
-                  <section className="res-section">
-                    <h3>TECHNICAL & DOMAIN SKILLS</h3>
-                    <div className="res-skills-list">
-                      {(user.resume?.skills || []).map((s) => (
-                        <span key={s} className="res-skill-pill">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  </section>
+                  {(displayResume.skills || []).length > 0 && (
+                    <section className="res-section">
+                      <h3>TECHNICAL & DOMAIN SKILLS</h3>
+                      <div className="res-skills-list">
+                        {displayResume.skills.map((s) => (
+                          <span key={s} className="res-skill-pill">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </section>
+                  )}
 
-                  {(user.resume?.roles || []).length > 0 && (
+                  {(displayResume.roles || []).length > 0 && (
                     <section className="res-section">
                       <h3>WORK EXPERIENCE</h3>
-                      {user.resume.roles.map((r, i) => (
+                      {displayResume.roles.map((r, i) => (
                         <div key={i} className="res-role-block">
                           <div className="role-top">
                             <strong>{r.title}</strong>
                             <span className="role-meta">
-                              {r.company} · {r.start || ""} - {r.end || "Present"}
+                              {r.company ? `${r.company} · ` : ""}{r.start || ""} {r.end ? `- ${r.end}` : ""}
                             </span>
                           </div>
                           {(r.highlights || []).length > 0 && (
@@ -388,10 +636,10 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
                     </section>
                   )}
 
-                  {(user.resume?.projects || []).length > 0 && (
+                  {(displayResume.projects || []).length > 0 && (
                     <section className="res-section">
                       <h3>KEY PROJECTS</h3>
-                      {user.resume.projects.map((p, i) => (
+                      {displayResume.projects.map((p, i) => (
                         <div key={i} className="res-role-block">
                           <div className="role-top">
                             <strong>{p.name}</strong>
@@ -405,10 +653,10 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
                     </section>
                   )}
 
-                  {(user.resume?.education || []).length > 0 && (
+                  {(displayResume.education || []).length > 0 && (
                     <section className="res-section">
                       <h3>EDUCATION</h3>
-                      {user.resume.education.map((e, i) => (
+                      {displayResume.education.map((e, i) => (
                         <div key={i} className="res-edu-row">
                           <div>
                             <strong>{e.institution}</strong>
@@ -423,11 +671,11 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
                     </section>
                   )}
 
-                  {(user.resume?.certifications || []).length > 0 && (
+                  {(displayResume.certifications || []).length > 0 && (
                     <section className="res-section">
                       <h3>CERTIFICATIONS</h3>
                       <ul className="res-bullets">
-                        {user.resume.certifications.map((c, i) => (
+                        {displayResume.certifications.map((c, i) => (
                           <li key={i}>
                             <strong>{typeof c === "string" ? c : c.name}</strong>
                             {c.issuer ? ` (${c.issuer})` : ""}

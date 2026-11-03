@@ -28,9 +28,271 @@ def latex_escape(s: str) -> str:
     return text
 
 
+def latex_unescape(text: str) -> str:
+    """Unescape LaTeX special characters back to readable text."""
+    if not text:
+        return ""
+    replacements = [
+        (r"\&", "&"),
+        (r"\%", "%"),
+        (r"\$", "$"),
+        (r"\_", "_"),
+        (r"\#", "#"),
+        (r"\{", "{"),
+        (r"\}", "}"),
+        (r"\textasciitilde{}", "~"),
+        (r"\textasciicircum{}", "^"),
+        (r"\textbackslash{}", "\\"),
+    ]
+    for old, new in replacements:
+        text = text.replace(old, new)
+    return text
+
+
+def strip_latex_formatting(text: str) -> str:
+    """Strip LaTeX tags and environments, returning clean text."""
+    if not text:
+        return ""
+    text = re.sub(r"(?<!\\)%.*$", "", text, flags=re.M)
+    text = re.sub(r"\\href\{[^}]*\}\{([^}]*)\}", r"\1", text)
+    text = re.sub(r"\\[a-zA-Z]+\{([^}]*)\}", r"\1", text)
+    text = re.sub(
+        r"\\(?:vspace|hspace|geometry|documentclass|usepackage|titleformat|titlespacing|pagestyle|hypersetup)\*?(?:\[[^\]]*\])?\{[^}]*\}",
+        "",
+        text,
+    )
+    text = re.sub(r"\\(?:begin|end)\{[^}]*\}(?:\[[^\]]*\])?", "", text)
+    text = re.sub(r"\\(?:hfill|titlerule|centering|large|LARGE|Huge|bfseries|uppercase|small|normalsize)", "", text)
+    text = text.replace(r"\\", "\n")
+    return latex_unescape(text).strip()
+
+
+def parse_latex_resume(tex: str) -> dict:
+    """Parse structured candidate details from LaTeX resume source."""
+    result = {
+        "name": "",
+        "email": "",
+        "phone": "",
+        "location": "",
+        "links": {},
+        "summary": "",
+        "skills": [],
+        "categorized_skills": {"technical": [], "tools_and_frameworks": [], "soft": [], "domain_expertise": []},
+        "roles": [],
+        "projects": [],
+        "education": [],
+        "certifications": [],
+        "achievements": [],
+        "desired_roles": [],
+        "domains": [],
+    }
+    if not tex or not tex.strip():
+        return result
+
+    # 1. Contact info
+    emails = re.findall(r"mailto:([\w\.-]+@[\w\.-]+\.\w+)", tex) or re.findall(r"[\w\.-]+@[\w\.-]+\.\w+", tex)
+    if emails:
+        result["email"] = emails[0].strip()
+
+    phones = re.findall(r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}", tex) or re.findall(
+        r"(?:\+?91[\-\s]?)?[6-9]\d{9}", tex
+    )
+    if phones:
+        result["phone"] = phones[0].strip()
+
+    li = re.findall(r"\\href\{([^}]*linkedin\.com[^}]*)\}", tex, re.IGNORECASE) or re.findall(
+        r"https?://(?:www\.)?linkedin\.com/in/[\w\-]+", tex
+    )
+    if li:
+        result["links"]["linkedin"] = li[0].strip()
+
+    gh = re.findall(r"\\href\{([^}]*github\.com[^}]*)\}", tex, re.IGNORECASE) or re.findall(
+        r"https?://(?:www\.)?github\.com/[\w\-]+", tex
+    )
+    if gh:
+        result["links"]["github"] = gh[0].strip()
+
+    port = re.findall(r"\\href\{([^}]+)\}\{(?:Portfolio|Website)\}", tex, re.IGNORECASE)
+    if port:
+        result["links"]["portfolio"] = port[0].strip()
+
+    # Name
+    name_m = re.search(r"\\begin\{center\}[\s\S]*?\{\\(?:LARGE|Large|Huge)\s*\\textbf\{([^}]+)\}\}", tex)
+    if not name_m:
+        name_m = re.search(r"\{\\(?:LARGE|Large|Huge)\s*\\textbf\{([^}]+)\}\}", tex)
+    if not name_m:
+        name_m = re.search(r"\\textbf\{([^}]+)\}", tex)
+    if name_m:
+        result["name"] = latex_unescape(name_m.group(1)).strip()
+
+    # Location in header
+    header_block = tex[:1200]
+    loc_m = re.search(r"\$\|\$\s*([A-Za-z\s,]+?)\s*\$\|\$", header_block)
+    if loc_m:
+        cand_loc = loc_m.group(1).strip()
+        if not any(k in cand_loc.lower() for k in ["http", "@", "github", "linkedin", "phone", "email"]):
+            result["location"] = cand_loc
+
+    # Sections
+    sections = re.split(r"\\section\*?\{([^}]+)\}", tex)
+    for i in range(1, len(sections), 2):
+        sec_title = sections[i].upper().strip()
+        sec_content = sections[i + 1] if i + 1 < len(sections) else ""
+
+        if any(k in sec_title for k in ("SUMMARY", "PROFILE", "OBJECTIVE")):
+            result["summary"] = strip_latex_formatting(sec_content)
+
+        elif any(k in sec_title for k in ("SKILL", "COMPETENC")):
+            cleaned = strip_latex_formatting(sec_content)
+            latex_junk = {"document", "article", "center", "itemize", "enumerate", "table", "tabular", "minipage"}
+            for line in cleaned.split("\n"):
+                line = re.sub(r"^\d+pt\b", "", line).strip()
+                if not line:
+                    continue
+                parts = re.split(r"[:\-]\s*", line, maxsplit=1)
+                sub_skills = [
+                    s.strip().lower()
+                    for s in re.split(r"[,•|;]+", parts[-1])
+                    if s.strip()
+                    and s.strip().lower() not in latex_junk
+                    and not s.strip().endswith("pt")
+                    and len(s.strip()) > 1
+                ]
+                if len(parts) > 1:
+                    header = parts[0].lower()
+                    if any(w in header for w in ("tech", "language", "stack")):
+                        result["categorized_skills"]["technical"].extend(sub_skills)
+                    elif any(w in header for w in ("tool", "platform", "framework", "cloud")):
+                        result["categorized_skills"]["tools_and_frameworks"].extend(sub_skills)
+                    elif any(w in header for w in ("soft", "competenc", "lead")):
+                        result["categorized_skills"]["soft"].extend(sub_skills)
+                    else:
+                        result["categorized_skills"]["domain_expertise"].extend(sub_skills)
+                result["skills"].extend(sub_skills)
+            result["skills"] = sorted(set(result["skills"]))
+
+        elif any(k in sec_title for k in ("EXPERIENCE", "WORK", "EMPLOYMENT", "HISTORY")):
+            role_blocks = re.split(r"\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*(?:\$\|\$|\|)\s*\\textit\{)", sec_content)
+            for rb in role_blocks:
+                rb = rb.strip()
+                if not rb or rb.startswith("%"):
+                    continue
+                tc_m = re.search(r"\\textbf\{([^}]+)\}\s*(?:\$\|\$|\|)\s*\\textit\{([^}]+)\}(?:[^\\]*?\\hfill\s*([^\\]+))?", rb)
+                raw_items = re.findall(r"\\item\s*(.+?)(?=\\item|\n\s*\\end|\Z)", rb, flags=re.S)
+                items = [strip_latex_formatting(h) for h in raw_items if strip_latex_formatting(h)]
+                if tc_m:
+                    title = latex_unescape(tc_m.group(1)).strip()
+                    company = latex_unescape(tc_m.group(2)).strip()
+                    dates = latex_unescape(tc_m.group(3) or "").strip()
+                    result["roles"].append({
+                        "title": title,
+                        "company": company,
+                        "start": dates,
+                        "highlights": items,
+                    })
+                elif items:
+                    result["roles"].append({
+                        "title": "Role",
+                        "company": "",
+                        "highlights": items,
+                    })
+
+        elif "PROJECT" in sec_title:
+            p_blocks = re.split(r"\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}(?:\$\|\$|\||\\\\))", sec_content)
+            for pb in p_blocks:
+                pb = pb.strip()
+                if not pb or pb.startswith("%"):
+                    continue
+                pname_m = re.search(r"\\textbf\{([^}]+)\}", pb)
+                raw_items = re.findall(r"\\item\s*(.+?)(?=\\item|\n\s*\\end|\Z)", pb, flags=re.S)
+                items = [strip_latex_formatting(h) for h in raw_items if strip_latex_formatting(h)]
+                if pname_m:
+                    result["projects"].append({
+                        "name": latex_unescape(pname_m.group(1)).strip(),
+                        "description": " ".join(items) if items else strip_latex_formatting(pb),
+                        "highlights": items,
+                    })
+
+        elif "EDUCATION" in sec_title:
+            edu_blocks = re.split(r"\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*\\hfill)", sec_content)
+            for eb in edu_blocks:
+                eb = eb.strip()
+                if not eb or eb.startswith("%"):
+                    continue
+                inst_m = re.search(r"\\textbf\{([^}]+)\}(?:[^\\]*?\\hfill\s*([^\\]+))?", eb)
+                deg_m = re.search(r"\\textit\{([^}]+)\}", eb)
+                if inst_m:
+                    result["education"].append({
+                        "institution": latex_unescape(inst_m.group(1)).strip(),
+                        "year": latex_unescape(inst_m.group(2) or "").strip(),
+                        "degree": latex_unescape(deg_m.group(1) if deg_m else "").strip(),
+                    })
+
+        elif any(k in sec_title for k in ("CERTIFICATION", "ACHIEVEMENT")):
+            raw_items = re.findall(r"\\item\s*(.+?)(?=\\item|\n\s*\\end|\Z)", sec_content, flags=re.S)
+            for itm in raw_items:
+                clean_itm = strip_latex_formatting(itm)
+                if clean_itm:
+                    result["certifications"].append({"name": clean_itm})
+
+    return result
+
+
 def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
     """Deterministic, comprehensive ATS score evaluation (0-100) with category breakdown."""
-    if not resume:
+    res = dict(resume or {})
+
+    # If LaTeX is provided, merge and enrich extracted fields
+    if latex and latex.strip():
+        parsed = parse_latex_resume(latex)
+        if not res.get("name") and parsed.get("name"):
+            res["name"] = parsed["name"]
+        if not res.get("email") and parsed.get("email"):
+            res["email"] = parsed["email"]
+        if not res.get("phone") and parsed.get("phone"):
+            res["phone"] = parsed["phone"]
+        if not res.get("location") and parsed.get("location"):
+            res["location"] = parsed["location"]
+        if not res.get("summary") and parsed.get("summary"):
+            res["summary"] = parsed["summary"]
+
+        merged_links = dict(res.get("links") or {})
+        for k, v in (parsed.get("links") or {}).items():
+            if v and not merged_links.get(k):
+                merged_links[k] = v
+        res["links"] = merged_links
+
+        existing_skills = set(res.get("skills") or [])
+        latex_skills = set(parsed.get("skills") or [])
+        res["skills"] = sorted(existing_skills | latex_skills)
+
+        res_cat = dict(res.get("categorized_skills") or {})
+        parsed_cat = parsed.get("categorized_skills") or {}
+        for cat_k in ("technical", "tools_and_frameworks", "soft", "domain_expertise"):
+            res_cat[cat_k] = sorted(set(res_cat.get(cat_k) or []) | set(parsed_cat.get(cat_k) or []))
+        res["categorized_skills"] = res_cat
+
+        if parsed.get("roles"):
+            if not res.get("roles") or len(parsed["roles"]) >= len(res.get("roles") or []):
+                res["roles"] = parsed["roles"]
+
+        if parsed.get("education") and not res.get("education"):
+            res["education"] = parsed["education"]
+        if parsed.get("projects") and not res.get("projects"):
+            res["projects"] = parsed["projects"]
+        if parsed.get("certifications") and not res.get("certifications"):
+            res["certifications"] = parsed["certifications"]
+
+    has_substance = bool(
+        res.get("name")
+        or res.get("skills")
+        or res.get("roles")
+        or res.get("education")
+        or res.get("summary")
+        or (latex and len(latex.strip()) > 80)
+    )
+
+    if not has_substance:
         return {
             "overall_score": 0,
             "rating": "No Resume",
@@ -55,27 +317,27 @@ def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
     # 1. Contact & Links (Max 15)
     contact_score = 0
     contact_feedback = []
-    if resume.get("name"):
+    if res.get("name"):
         contact_score += 3
     else:
         contact_feedback.append("Missing candidate name")
 
-    if resume.get("email") and "@" in resume.get("email", ""):
+    if res.get("email") and "@" in res.get("email", ""):
         contact_score += 3
     else:
         contact_feedback.append("Add a professional email address")
 
-    if resume.get("phone"):
+    if res.get("phone"):
         contact_score += 3
     else:
         contact_feedback.append("Add a direct contact phone number")
 
-    if resume.get("location"):
+    if res.get("location"):
         contact_score += 3
     else:
         contact_feedback.append("Specify your city/location")
 
-    links = resume.get("links") or {}
+    links = res.get("links") or {}
     has_links = bool(links.get("linkedin") or links.get("github") or links.get("portfolio") or links.get("website"))
     if has_links:
         contact_score += 3
@@ -85,41 +347,41 @@ def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
     # 2. Professional Summary (Max 15)
     summary_score = 0
     summary_feedback = []
-    summary = (resume.get("summary") or "").strip()
+    summary = (res.get("summary") or "").strip()
     words = len(summary.split())
     if summary:
         summary_score += 6
-        if 25 <= words <= 140:
+        if 20 <= words <= 150:
             summary_score += 5
-        elif words < 25:
+        elif words < 20:
             summary_feedback.append("Summary is too brief; aim for 2-3 impactful sentences")
         else:
             summary_feedback.append("Summary is lengthy; condense to high-impact keywords")
 
-        domains = resume.get("domains") or []
-        desired = resume.get("desired_roles") or []
+        domains = res.get("domains") or []
+        desired = res.get("desired_roles") or []
         if domains or desired:
             summary_score += 4
+        else:
+            summary_score += 2
     else:
         summary_feedback.append("Add an executive summary targeting your target roles")
 
     # 3. Work Experience & Quantifiable Impact (Max 30)
     exp_score = 0
     exp_feedback = []
-    roles = resume.get("roles") or []
+    roles = res.get("roles") or []
     if roles:
         exp_score += 8
         if len(roles) >= 2:
             exp_score += 4
 
-        # Check for highlights and metrics
         all_highlights = []
         for r in roles:
             all_highlights.extend(r.get("highlights") or [])
 
         if all_highlights:
             exp_score += 6
-            # Look for numbers/metrics: %, $, numbers with k/m/+, or digits
             metric_pattern = re.compile(r"(\d+%|\$\d+|\d+\+|\b\d+\b|\bincreased\b|\breduced\b|\bscaled\b|\bsaved\b)", re.IGNORECASE)
             metrics_count = sum(1 for h in all_highlights if metric_pattern.search(h))
             if metrics_count >= 3:
@@ -130,11 +392,10 @@ def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
             else:
                 exp_feedback.append("Zero metrics detected. ATS parsers strongly favor quantifiable results (% / $ / scale)")
 
-            # Check action verbs
             action_verbs = {
                 "built", "developed", "led", "managed", "designed", "implemented", "orchestrated",
                 "engineered", "created", "increased", "reduced", "delivered", "optimized", "streamlined",
-                "spearheaded", "directed", "analyzed", "automated", "launched", "executed"
+                "spearheaded", "directed", "analyzed", "automated", "launched", "executed", "architected"
             }
             has_action_verbs = any(any(h.lower().strip().startswith(v) for v in action_verbs) for h in all_highlights)
             if has_action_verbs:
@@ -149,7 +410,7 @@ def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
     # 4. Skills & Keywords (Max 20)
     skills_score = 0
     skills_feedback = []
-    skills = resume.get("skills") or []
+    skills = res.get("skills") or []
     if len(skills) >= 10:
         skills_score += 10
     elif len(skills) >= 5:
@@ -161,22 +422,23 @@ def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
     else:
         skills_feedback.append("Add a dedicated skills section with key tools and technologies")
 
-    cat_skills = resume.get("categorized_skills") or {}
+    cat_skills = res.get("categorized_skills") or {}
     if cat_skills.get("technical") or cat_skills.get("tools_and_frameworks") or cat_skills.get("soft"):
         skills_score += 5
     else:
         skills_score += 2
 
-    # Check desired roles alignment
-    if resume.get("desired_roles"):
+    if res.get("desired_roles"):
         skills_score += 5
+    elif len(skills) >= 6:
+        skills_score += 3
     else:
-        skills_score += 2
+        skills_score += 1
 
     # 5. Education, Projects & Certifications (Max 20)
     edu_score = 0
     edu_feedback = []
-    education = resume.get("education") or []
+    education = res.get("education") or []
     if education:
         edu_score += 8
         first_edu = education[0] if isinstance(education, list) else {}
@@ -185,9 +447,9 @@ def calculate_ats_score(resume: dict, latex: Optional[str] = None) -> dict:
     else:
         edu_feedback.append("Include education credentials with degree and institution")
 
-    certs = resume.get("certifications") or []
-    projects = resume.get("projects") or []
-    achievements = resume.get("achievements") or []
+    certs = res.get("certifications") or []
+    projects = res.get("projects") or []
+    achievements = res.get("achievements") or []
 
     if certs:
         edu_score += 5

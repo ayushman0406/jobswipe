@@ -1,4 +1,5 @@
 import re
+import urllib.parse
 from typing import Optional
 
 import numpy as np
@@ -74,7 +75,7 @@ def job_to_dict(j: Job) -> dict:
     cat = (j.category or "").lower()
     photo = j.photo_url or CATEGORY_PHOTOS.get(cat, DEFAULT_PHOTO)
     quote = j.hiring_quote or CATEGORY_INVITES.get(cat, DEFAULT_INVITE)
-    logo = j.company_logo or f"https://ui-avatars.com/api/?name={j.company or 'Company'}&background=1c1612&color=fffdf8&bold=true&size=128"
+    logo = j.company_logo or f"https://ui-avatars.com/api/?name={urllib.parse.quote_plus(j.company or 'Company')}&background=1c1612&color=fffdf8&bold=true&size=128"
 
     return {
         "job_id": j.id, "title": j.title, "company": j.company, "location": j.location,

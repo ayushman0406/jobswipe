@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../api";
+import BootLoader from "../components/BootLoader";
 import { CAT_COLOR } from "../format";
 import { copy } from "../i18n";
 
@@ -54,6 +55,10 @@ export default function Onboarding({ meta, onDone }) {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (busy) {
+    return <BootLoader title={t.brand} subtitle={t.loadingProgress} />;
   }
 
   return (

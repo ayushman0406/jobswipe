@@ -140,6 +140,89 @@ class TestJobSwipeEnhancements(unittest.TestCase):
         user_data = res.json()
         self.assertTrue(user_data["has_latex"])
 
+    def test_parse_latex_resume_and_ats_evaluation(self):
+        sample_tex = r"""\documentclass[letterpaper,10pt]{article}
+\begin{document}
+\begin{center}
+    {\LARGE \textbf{Arjun Mehra}} \\[3pt]
+    \href{mailto:arjun@example.com}{arjun@example.com} $|$ +91 9876543210 $|$ Bengaluru $|$ \href{https://linkedin.com/in/arjun}{LinkedIn} $|$ \href{https://github.com/arjun}{GitHub}
+\end{center}
+\section*{PROFESSIONAL SUMMARY}
+Senior Backend Architect and Distributed Systems Lead with 7+ years of deep expertise designing event-driven streaming pipelines, cloud-native infrastructure, and high-concurrency microservices.
+\section*{TECHNICAL \& DOMAIN SKILLS}
+\textbf{Technical Skills:} python, fastapi, postgresql, redis, kafka, go, grpc \\
+\textbf{Tools \& Platforms:} docker, kubernetes, aws, terraform, prometheus, grafana
+\section*{WORK EXPERIENCE}
+\textbf{Staff Infrastructure Engineer} $|$ \textit{CloudGrid Labs} \hfill 2021 -- Present \\
+\begin{itemize}
+    \item Architected real-time streaming pipeline processing 150M events/day with 99.99\% reliability.
+    \item Reduced cloud infrastructure costs by 40\% (\$120,000 annual savings) via workload rightsizing.
+    \item Spearheaded zero-downtime database migration to distributed PostgreSQL, accelerating queries by 3x.
+\end{itemize}
+\vspace{4pt}
+\textbf{Senior Cloud Engineer} $|$ \textit{DataScale Tech} \hfill 2018 -- 2021 \\
+\begin{itemize}
+    \item Automated CI/CD deployments across 80 Kubernetes microservices reducing lead time by 65\%.
+    \item Optimized Kafka consumers to handle 45,000 messages/sec with sub-50ms latency.
+\end{itemize}
+\section*{KEY PROJECTS}
+\textbf{StreamSync Engine} $|$ \textit{Python, Rust, Kafka} \\
+\begin{itemize}
+    \item Built open-source telemetry engine downloaded over 20,000 times by developers worldwide.
+\end{itemize}
+\section*{EDUCATION}
+\textbf{IIT Delhi} \hfill 2018 \\
+\textit{B.Tech in Computer Science}
+\section*{CERTIFICATIONS}
+\begin{itemize}
+    \item \textbf{AWS Certified Solutions Architect -- Professional} -- 2023
+\end{itemize}
+\end{document}"""
+
+        from app.ats import parse_latex_resume
+        parsed = parse_latex_resume(sample_tex)
+        self.assertEqual(parsed["name"], "Arjun Mehra")
+        self.assertEqual(parsed["email"], "arjun@example.com")
+        self.assertEqual(parsed["phone"], "+91 9876543210")
+        self.assertIn("python", parsed["skills"])
+        self.assertIn("fastapi", parsed["skills"])
+        self.assertIn("docker", parsed["skills"])
+        self.assertEqual(len(parsed["roles"]), 2)
+        self.assertEqual(parsed["roles"][0]["company"], "CloudGrid Labs")
+        self.assertEqual(len(parsed["roles"][0]["highlights"]), 3)
+        self.assertEqual(len(parsed["education"]), 1)
+        self.assertEqual(len(parsed["projects"]), 1)
+        self.assertEqual(len(parsed["certifications"]), 1)
+
+        # ATS scoring on LaTeX directly
+        ats_result = calculate_ats_score({}, latex=sample_tex)
+        self.assertGreaterEqual(ats_result["overall_score"], 88)
+        self.assertEqual(ats_result["rating"], "Exceptional")
+        self.assertEqual(ats_result["breakdown"]["contact"]["score"], 15)
+        self.assertEqual(ats_result["breakdown"]["experience"]["score"], 30)
+        self.assertGreaterEqual(ats_result["breakdown"]["skills"]["score"], 15)
+        self.assertGreaterEqual(ats_result["breakdown"]["education_certs"]["score"], 15)
+
+    def test_latex_put_syncs_resume_json(self):
+        res = self.client.post("/users", json={"name": "Pooja", "email": "pooja@test.com", "preferred_lang": "en"})
+        uid = res.json()["id"]
+
+        rich_tex = r"""\documentclass{article}\begin{document}
+\begin{center}{\LARGE \textbf{Pooja Sundaram}}\\[3pt]\href{mailto:pooja@test.com}{pooja@test.com} $|$ +91 9876500000 $|$ Mumbai\end{center}
+\section*{PROFESSIONAL SUMMARY}Principal Architect with proven track record in fintech systems.
+\section*{TECHNICAL SKILLS}\textbf{Skills:} python, go, kubernetes, aws, redis
+\section*{WORK EXPERIENCE}\textbf{Lead Architect} $|$ \textit{PayScale}\begin{itemize}\item Engineered payment router handling 50k TPS.\end{itemize}
+\end{document}"""
+
+        put_res = self.client.put(f"/users/{uid}/resume/latex", json={"latex": rich_tex})
+        self.assertEqual(put_res.status_code, 200)
+        put_data = put_res.json()
+        self.assertTrue(put_data["ok"])
+        self.assertGreaterEqual(put_data["ats"]["overall_score"], 40)
+        self.assertIn("python", put_data["resume"]["skills"])
+        self.assertEqual(put_data["resume"]["name"], "Pooja Sundaram")
+
 
 if __name__ == "__main__":
     unittest.main()
+
