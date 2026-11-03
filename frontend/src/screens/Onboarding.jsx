@@ -73,7 +73,7 @@ export default function Onboarding({ meta, onDone }) {
       </div>
 
       {step === 0 && (
-        <div className="form">
+        <div className="form animate-fade-in" key="step-0">
           <label>
             {t.name}
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Himanshu" autoFocus />
@@ -94,25 +94,31 @@ export default function Onboarding({ meta, onDone }) {
       )}
 
       {step === 1 && (
-        <div className="cat-grid">
-          {categories.map((c) => (
-            <button
-              key={c.slug}
-              type="button"
-              className={cats.includes(c.slug) ? "cat on" : "cat"}
-              style={{ "--cat": CAT_COLOR[c.slug] || "#444" }}
-              onClick={() => toggle(c.slug)}
-            >
-              <strong>{c.label}</strong>
-              <span>{c.blurb}</span>
-            </button>
-          ))}
+        <div className="cat-grid animate-fade-in" key="step-1">
+          {categories.map((c) => {
+            const isSelected = cats.includes(c.slug);
+            return (
+              <button
+                key={c.slug}
+                type="button"
+                className={isSelected ? "cat on" : "cat"}
+                style={{ "--cat": CAT_COLOR[c.slug] || "#444" }}
+                onClick={() => toggle(c.slug)}
+              >
+                <div className="cat-header-row">
+                  <strong>{c.label}</strong>
+                  {isSelected && <span className="cat-check">✓</span>}
+                </div>
+                <span>{c.blurb}</span>
+              </button>
+            );
+          })}
           {!categories.length && <p className="muted">{t.unseeded}</p>}
         </div>
       )}
 
       {step === 2 && (
-        <div className="form">
+        <div className="form animate-fade-in" key="step-2">
           <label>
             {t.city}
             <select value={city} onChange={(e) => setCity(e.target.value)}>
@@ -124,14 +130,18 @@ export default function Onboarding({ meta, onDone }) {
               ))}
             </select>
           </label>
-          <label className="file">
-            {t.upload}
+          <label className={`file-upload-card ${file ? "has-file" : ""}`}>
+            <span className="file-label-text">{t.upload}</span>
             <input
               type="file"
               accept="application/pdf,.pdf"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
-            <em>{file ? file.name : "PDF"}</em>
+            <div className="file-feedback">
+              <span className="file-icon">{file ? "📄" : "📤"}</span>
+              <em>{file ? file.name : "Select or drop your PDF resume"}</em>
+              {file && <span className="file-ready-tag">✓ Ready to optimize</span>}
+            </div>
           </label>
         </div>
       )}

@@ -107,10 +107,23 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
                 {t.close}
               </button>
             </div>
-            {whyBusy && <p className="muted loading-pulsar">{t.loading}</p>}
-            {whyError && <p className="error">{whyError}</p>}
+            {whyBusy && (
+              <div className="why-skel-wrap">
+                <div className="skel-line w80 shimmer" />
+                <div className="skel-line w100 shimmer" />
+                <div className="skel-line w60 shimmer" />
+              </div>
+            )}
+            {whyError && (
+              <div className="why-error-row">
+                <p className="error">{whyError}</p>
+                <button type="button" className="ghost retry-btn" onClick={() => openWhy(whyFor)}>
+                  ↺ {t.retry || "Retry"}
+                </button>
+              </div>
+            )}
             {why?.coach_error && <p className="muted">{why.coach_error}</p>}
-            {why && (
+            {why && !whyBusy && (
               <>
                 {(why.why || []).length > 0 && (
                   <ul className="why-list">
@@ -119,13 +132,13 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
                     ))}
                   </ul>
                 )}
-                {why.tip && <p className="tip">{why.tip}</p>}
+                {why.tip && <p className="tip">💡 {why.tip}</p>}
                 <p className="kicker">{t.fits}</p>
                 <div className="chips">
                   {(why.matched_skills || []).length ? (
                     why.matched_skills.map((s) => (
                       <span key={s} className="chip good">
-                        {s}
+                        ✓ {s}
                       </span>
                     ))
                   ) : (
@@ -157,11 +170,13 @@ export default function Deck({ user, cards, meta, t, busy, onSwipe }) {
 function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
   const drag = useRef(null);
   const gone = useRef(false);
-  const [pos, setPos] = useState({ x: 0, y: 0, fly: false });
+  const [pos, setPos] = useState({ x: 0, y: 0, fly: false, resetting: false });
+  const [photoLoaded, setPhotoLoaded] = useState(false);
 
   useEffect(() => {
     if (!active) return undefined;
     function onKey(e) {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable) return;
       if (e.key === "ArrowLeft") fly("pass");
       if (e.key === "ArrowRight") fly("like");
       if (e.key === "ArrowUp") fly("superlike");
@@ -175,41 +190,70 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
     gone.current = true;
     const x = action === "pass" ? -560 : action === "like" ? 560 : 0;
     const y = action === "superlike" ? -640 : 30;
-    setPos({ x, y, fly: true });
+    setPos({ x, y, fly: true, resetting: false });
     window.setTimeout(() => onGone(action), 220);
   }
 
   function down(e) {
-    if (!active) return;
-    drag.current = { pid: e.pointerId, sx: e.clientX, sy: e.clientY, x: 0, y: 0 };
+    if (!active || drag.current) return;
+    drag.current = {
+      pid: e.pointerId,
+      sx: e.clientX,
+      sy: e.clientY,
+      x: 0,
+      y: 0,
+      startTime: Date.now(),
+    };
+    setPos((p) => ({ ...p, resetting: false }));
     e.currentTarget.setPointerCapture(e.pointerId);
   }
+
   function move(e) {
     if (!drag.current || drag.current.pid !== e.pointerId) return;
-    const x = e.clientX - drag.current.sx;
-    const y = e.clientY - drag.current.sy;
+    const rawX = e.clientX - drag.current.sx;
+    const rawY = e.clientY - drag.current.sy;
+    // Downward drag gets elastic damping
+    const y = rawY > 0 ? rawY * 0.45 : rawY;
+    const x = rawX;
     drag.current.x = x;
     drag.current.y = y;
-    setPos({ x, y, fly: false });
+    setPos({ x, y, fly: false, resetting: false });
   }
+
   function up(e) {
     if (!drag.current || drag.current.pid !== e.pointerId) return;
-    const { x, y } = drag.current;
+    const { x, y, startTime } = drag.current;
+    const timeTaken = Math.max(1, Date.now() - (startTime || Date.now()));
+    const velX = Math.abs(x) / timeTaken;
+    const velY = Math.abs(y) / timeTaken;
     drag.current = null;
-    if (y < -120 && Math.abs(x) < 90) fly("superlike");
-    else if (x > 120) fly("like");
-    else if (x < -120) fly("pass");
-    else setPos({ x: 0, y: 0, fly: false });
+
+    // Velocity-based flick or distance thresholds
+    if ((y < -110 || (y < -50 && velY > 0.45)) && Math.abs(x) < 90) {
+      fly("superlike");
+    } else if (x > 110 || (x > 45 && velX > 0.45)) {
+      fly("like");
+    } else if (x < -110 || (x < -45 && velX > 0.45)) {
+      fly("pass");
+    } else {
+      // Responsive spring return
+      setPos({ x: 0, y: 0, fly: false, resetting: true });
+    }
   }
 
   const color = CAT_COLOR[job.category] || "#444";
-  const rot = pos.x / 18;
+  const rot = (pos.x / 16) * (1 - Math.min(0.4, Math.abs(pos.x) / 1000));
   const stack = index === 0 ? "" : `translateY(${index * 12}px) scale(${1 - index * 0.045})`;
   const transform = index === 0 ? `translate(${pos.x}px, ${pos.y}px) rotate(${rot}deg)` : stack;
 
+  // Dynamic stamp feedback based on drag position
+  const likeOpacity = index === 0 ? Math.min(1, Math.max(0, (pos.x - 20) / 70)) : 0;
+  const passOpacity = index === 0 ? Math.min(1, Math.max(0, (-pos.x - 20) / 70)) : 0;
+  const superOpacity = index === 0 && Math.abs(pos.x) < 70 ? Math.min(1, Math.max(0, (-pos.y - 30) / 70)) : 0;
+
   return (
     <article
-      className={pos.fly ? "card-face fly" : "card-face"}
+      className={`card-face ${pos.fly ? "fly" : ""} ${pos.resetting ? "resetting" : ""}`}
       style={{
         zIndex: 30 - index,
         transform,
@@ -223,12 +267,15 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
     >
       {/* 1. Curated photo banner & hiring overlay */}
       <div className="card-photo-banner">
+        {!photoLoaded && <div className="skel-banner shimmer card-photo-skel" />}
         <img
           src={job.photo_url || "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80"}
           alt={job.title}
-          className="card-photo"
+          className={`card-photo ${photoLoaded ? "loaded" : "loading"}`}
           loading="lazy"
+          onLoad={() => setPhotoLoaded(true)}
           onError={(e) => {
+            setPhotoLoaded(true);
             e.currentTarget.src = "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80";
           }}
         />
@@ -243,6 +290,9 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
           src={job.company_logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company || "Co")}&background=1c1612&color=fffdf8&bold=true&size=128`}
           alt={job.company}
           className="company-logo"
+          onError={(e) => {
+            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(job.company || "Co")}&background=1c1612&color=fffdf8&bold=true&size=128`;
+          }}
         />
         <div className="company-details">
           <div className="company-name-row">
@@ -311,14 +361,39 @@ function SwipeCard({ job, index, active, meta, t, onGone, onWhy }) {
         {t.why}
       </button>
 
-      {/* 10. Stamp feedback on drag */}
-      {index === 0 && Math.abs(pos.x) > 40 && (
-        <span className={pos.x > 0 ? "stamp like" : "stamp pass"}>
-          {pos.x > 0 ? t.like : t.pass}
+      {/* 10. Dynamic Tactile Stamp Feedback */}
+      {index === 0 && likeOpacity > 0 && (
+        <span
+          className="stamp like"
+          style={{
+            opacity: likeOpacity,
+            transform: `rotate(12deg) scale(${0.88 + 0.16 * likeOpacity})`,
+          }}
+        >
+          {t.like}
         </span>
       )}
-      {index === 0 && pos.y < -50 && Math.abs(pos.x) <= 40 && (
-        <span className="stamp super">{t.super}</span>
+      {index === 0 && passOpacity > 0 && (
+        <span
+          className="stamp pass"
+          style={{
+            opacity: passOpacity,
+            transform: `rotate(-12deg) scale(${0.88 + 0.16 * passOpacity})`,
+          }}
+        >
+          {t.pass}
+        </span>
+      )}
+      {index === 0 && superOpacity > 0 && (
+        <span
+          className="stamp super"
+          style={{
+            opacity: superOpacity,
+            transform: `scale(${0.88 + 0.16 * superOpacity})`,
+          }}
+        >
+          {t.super}
+        </span>
       )}
     </article>
   );

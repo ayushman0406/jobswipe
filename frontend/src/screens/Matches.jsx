@@ -19,16 +19,35 @@ export default function Matches({ user, items, meta, t, onChange }) {
     }
   }
 
-  if (!items.length) return <div className="empty card-face flat">{t.noMatches}</div>;
+  if (!items.length) {
+    return (
+      <div className="empty card-face flat animate-fade-in">
+        <span className="empty-icon">💌</span>
+        <h2>{t.noMatches}</h2>
+        <p className="muted">
+          Swipe right or Superlike open roles to build mutual connections and interview invites!
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="match-list">
       {error && <p className="error">{error}</p>}
-      {items.map((m) => (
-        <article key={m.match_id} className="match" style={{ "--cat": CAT_COLOR[m.category] || "#444" }}>
+      {items.map((m, idx) => (
+        <article
+          key={m.match_id}
+          className="match animate-fade-in"
+          style={{
+            "--cat": CAT_COLOR[m.category] || "#444",
+            animationDelay: `${idx * 50}ms`,
+          }}
+        >
           <header>
             <span className="pill">{catLabel(meta, m.category)}</span>
-            <span className={m.status === "mutual" ? "status mutual" : "status"}>{m.status === "mutual" ? t.mutual : t.applied}</span>
+            <span className={m.status === "mutual" ? "status mutual" : "status"}>
+              {m.status === "mutual" ? `✨ ${t.mutual}` : t.applied}
+            </span>
           </header>
           <h2>{m.title}</h2>
           <p className="company">

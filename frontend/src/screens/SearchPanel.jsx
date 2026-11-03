@@ -120,6 +120,12 @@ export default function SearchPanel({
             value={text}
             placeholder={t.searchPh}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                submit(e);
+              }
+            }}
           />
         </label>
         <div className="row tight">

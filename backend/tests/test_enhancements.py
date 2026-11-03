@@ -223,6 +223,81 @@ Senior Backend Architect and Distributed Systems Lead with 7+ years of deep expe
         self.assertEqual(put_data["resume"]["name"], "Pooja Sundaram")
 
 
+    def test_parse_latex_variations(self):
+        from app.ats import parse_latex_resume
+
+        # Format with \hfill for company and dates, plus multiline items
+        custom_tex = r"""\documentclass{article}\begin{document}
+\begin{center}{\LARGE \textbf{Aditi Sharma}}\\[3pt]\href{mailto:aditi@test.com}{aditi@test.com} $|$ +91 9123456780\end{center}
+\section*{EXPERIENCE}
+\textbf{Senior Cloud Architect} \hfill \textit{NextGen Cloud} \hfill \textit{2020 -- Present}
+\begin{itemize}
+    \item Designed high-throughput microservices architecture with Apache Kafka and FastAPI,
+          reducing end-to-end processing latency by 45\% and saving \$80,000 annually.
+    \item Spearheaded migration of legacy systems to Kubernetes with 99.99\% uptime.
+\end{itemize}
+\section*{EDUCATION}
+\textbf{National Institute of Technology} \hfill 2019 \\
+\textit{B.Tech in Computer Engineering}
+\end{document}"""
+
+        parsed = parse_latex_resume(custom_tex)
+        self.assertEqual(parsed["name"], "Aditi Sharma")
+        self.assertEqual(len(parsed["roles"]), 1)
+        self.assertEqual(parsed["roles"][0]["title"], "Senior Cloud Architect")
+        self.assertEqual(parsed["roles"][0]["company"], "NextGen Cloud")
+        self.assertIn("2020 -- Present", parsed["roles"][0]["start"])
+        self.assertEqual(len(parsed["roles"][0]["highlights"]), 2)
+        # Verify multiline item preserved % and $
+        first_hl = parsed["roles"][0]["highlights"][0]
+        self.assertIn("45%", first_hl)
+        self.assertIn("$80,000", first_hl)
+        self.assertIn("FastAPI", first_hl)
+
+        self.assertEqual(len(parsed["education"]), 1)
+        self.assertEqual(parsed["education"][0]["institution"], "National Institute of Technology")
+        self.assertEqual(parsed["education"][0]["degree"], "B.Tech in Computer Engineering")
+
+    def test_chat_improve_resume_offline_fallback(self):
+        from unittest.mock import patch
+        from app.ats import chat_improve_resume
+
+        base_latex = r"""\documentclass{article}\begin{document}
+\begin{center}{\LARGE \textbf{Test User}}\end{center}
+\section*{WORK EXPERIENCE}
+\textbf{Software Engineer} $|$ \textit{ABC Corp}
+\begin{itemize}
+    \item Built backend APIs
+\end{itemize}
+\end{document}"""
+
+        # Force chat() to fail to test fallback
+        with patch("app.ats.chat", side_effect=RuntimeError("Connection refused to LLM")):
+            res = chat_improve_resume("Add quantifiable metrics to my bullets", base_latex, {"name": "Test User"})
+            self.assertIn("latex", res)
+            self.assertIn("reply", res)
+            self.assertTrue(len(res["changes_made"]) > 0)
+            self.assertIn("\\%", res["latex"])
+            self.assertGreaterEqual(res["estimated_score"], 20)
+            self.assertEqual(len(res["quick_prompts"]), 3)
+
+    def test_why_match_heuristic_fallback(self):
+        from unittest.mock import patch
+
+        res = self.client.post("/users", json={"name": "Karan", "email": "karan@test.com", "preferred_lang": "en"})
+        uid = res.json()["id"]
+
+        with patch("app.matching.explain", side_effect=RuntimeError("Ollama offline")):
+            # Job 1 is guaranteed to exist from seed
+            why_res = self.client.get(f"/users/{uid}/jobs/1/why")
+            self.assertEqual(why_res.status_code, 200)
+            data = why_res.json()
+            self.assertTrue(len(data["why"]) > 0)
+            self.assertTrue(len(data["tip"]) > 5)
+            self.assertIsNone(data.get("coach_error"))
+
+
 if __name__ == "__main__":
     unittest.main()
+
 

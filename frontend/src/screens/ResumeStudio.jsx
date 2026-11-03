@@ -4,137 +4,182 @@ import { api } from "../api";
 function parseClientLatex(tex) {
   if (!tex || typeof tex !== "string") return null;
 
-  function unescapeLatex(s) {
-    if (!s) return "";
-    return s
-      .replace(/\\&/g, "&")
-      .replace(/\\%/g, "%")
-      .replace(/\\\$/g, "$")
-      .replace(/\\_/g, "_")
-      .replace(/\\#/g, "#")
-      .replace(/\\\{/g, "{")
-      .replace(/\\\}/g, "}")
-      .replace(/\\textasciitilde\{\}/g, "~")
-      .replace(/\\textasciicircum\{\}/g, "^")
-      .replace(/\\textbackslash\{\}/g, "\\");
-  }
+  try {
+    function unescapeLatex(s) {
+      if (!s) return "";
+      return s
+        .replace(/\\&/g, "&")
+        .replace(/\\%/g, "%")
+        .replace(/\\\$/g, "$")
+        .replace(/\\_/g, "_")
+        .replace(/\\#/g, "#")
+        .replace(/\\\{/g, "{")
+        .replace(/\\\}/g, "}")
+        .replace(/\\textasciitilde\{\}/g, "~")
+        .replace(/\\textasciicircum\{\}/g, "^")
+        .replace(/\\textbackslash\{\}/g, "\\");
+    }
 
-  function strip(s) {
-    if (!s) return "";
-    return unescapeLatex(
-      s
-        .replace(/%.*$/gm, "")
-        .replace(/\\href\{[^}]*\}\{([^}]*)\}/g, "$1")
-        .replace(/\\[a-zA-Z]+\{([^}]*)\}/g, "$1")
-        .replace(/\\[a-zA-Z]+\*?(?:\[[^\]]*\])?(?:\{[^}]*\})?/g, "")
-        .replace(/\\\\/g, "\n")
-    ).trim();
-  }
+    function strip(s) {
+      if (!s) return "";
+      let text = s.replace(/(?<!\\)%.*$/gm, "");
+      text = text.replace(/\\href\{[^}]*\}\{([^}]*)\}/g, "$1");
+      text = text.replace(/\\[a-zA-Z]+\{([^}]*)\}/g, "$1");
+      text = text.replace(/\\[a-zA-Z]+\*?(?:\[[^\]]*\])?(?:\{[^}]*\})?/g, "");
+      text = text.replace(/\\\\/g, "\n");
+      return unescapeLatex(text).replace(/\s+/g, " ").trim();
+    }
 
-  const result = {
-    name: "",
-    email: "",
-    phone: "",
-    location: "",
-    links: {},
-    summary: "",
-    skills: [],
-    roles: [],
-    projects: [],
-    education: [],
-    certifications: [],
-  };
+    const result = {
+      name: "",
+      email: "",
+      phone: "",
+      location: "",
+      links: {},
+      summary: "",
+      skills: [],
+      roles: [],
+      projects: [],
+      education: [],
+      certifications: [],
+    };
 
-  const nameMatch = tex.match(/\{\\(?:LARGE|Large|Huge)\s*\\textbf\{([^}]+)\}\}/) || tex.match(/\\textbf\{([^}]+)\}/);
-  if (nameMatch) result.name = strip(nameMatch[1]);
+    const nameMatch =
+      tex.match(/\\begin\{center\}[\s\S]*?\{\\(?:LARGE|Large|Huge)\s*\\textbf\{([^}]+)\}\}/) ||
+      tex.match(/\{\\(?:LARGE|Large|Huge)\s*\\textbf\{([^}]+)\}\}/) ||
+      tex.match(/\\textbf\{([^}]+)\}/);
+    if (nameMatch) result.name = strip(nameMatch[1]);
 
-  const emailMatch = tex.match(/mailto:([\w.-]+@[\w.-]+\.\w+)/) || tex.match(/[\w.-]+@[\w.-]+\.\w+/);
-  if (emailMatch) result.email = emailMatch[1] || emailMatch[0];
+    const emailMatch = tex.match(/mailto:([\w.-]+@[\w.-]+\.\w+)/) || tex.match(/[\w.-]+@[\w.-]+\.\w+/);
+    if (emailMatch) result.email = emailMatch[1] || emailMatch[0];
 
-  const phoneMatch = tex.match(/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|(?:\+?91[\-\s]?)?[6-9]\d{9}/);
-  if (phoneMatch) result.phone = phoneMatch[0].trim();
+    const phoneMatch = tex.match(/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|(?:\+?91[\-\s]?)?[6-9]\d{9}/);
+    if (phoneMatch) result.phone = phoneMatch[0].trim();
 
-  const liMatch = tex.match(/\\href\{([^}]*linkedin\.com[^}]*)\}/i) || tex.match(/https?:\/\/(?:www\.)?linkedin\.com\/in\/[\w-]+/i);
-  if (liMatch) result.links.linkedin = liMatch[1] || liMatch[0];
+    const liMatch = tex.match(/\\href\{([^}]*linkedin\.com[^}]*)\}/i) || tex.match(/https?:\/\/(?:www\.)?linkedin\.com\/in\/[\w-]+/i);
+    if (liMatch) result.links.linkedin = liMatch[1] || liMatch[0];
 
-  const ghMatch = tex.match(/\\href\{([^}]*github\.com[^}]*)\}/i) || tex.match(/https?:\/\/(?:www\.)?github\.com\/[\w-]+/i);
-  if (ghMatch) result.links.github = ghMatch[1] || ghMatch[0];
+    const ghMatch = tex.match(/\\href\{([^}]*github\.com[^}]*)\}/i) || tex.match(/https?:\/\/(?:www\.)?github\.com\/[\w-]+/i);
+    if (ghMatch) result.links.github = ghMatch[1] || ghMatch[0];
 
-  const portMatch = tex.match(/\\href\{([^}]+)\}\{(?:Portfolio|Website)\}/i);
-  if (portMatch) result.links.portfolio = portMatch[1];
+    const portMatch = tex.match(/\\href\{([^}]+)\}\{(?:Portfolio|Website)\}/i);
+    if (portMatch) result.links.portfolio = portMatch[1];
 
-  const sections = tex.split(/\\section\*?\{([^}]+)\}/);
-  for (let i = 1; i < sections.length; i += 2) {
-    const title = sections[i].toUpperCase().trim();
-    const content = sections[i + 1] || "";
+    const headerBlock = tex.slice(0, 1200);
+    const locMatch = headerBlock.match(/\$\|\$\s*([A-Za-z\s,]+?)\s*\$\|\$/);
+    if (locMatch && !/http|@|github|linkedin|phone|email/i.test(locMatch[1])) {
+      result.location = locMatch[1].trim();
+    }
 
-    if (/SUMMARY|PROFILE|OBJECTIVE/.test(title)) {
-      result.summary = strip(content);
-    } else if (/SKILL|COMPETENC/.test(title)) {
-      const cleaned = strip(content);
-      const items = [];
-      const junk = new Set(["document", "article", "center", "itemize", "enumerate"]);
-      cleaned.split("\n").forEach((line) => {
-        const parts = line.split(/[:\-]/);
-        const chunk = parts[parts.length - 1];
-        chunk.split(/[,•|;]+/).forEach((token) => {
-          const t = token.trim();
-          if (t && !junk.has(t.toLowerCase()) && !/^\d+pt$/.test(t) && t.length > 1) {
-            items.push(t);
+    const sections = tex.split(/\\section\*?\{([^}]+)\}/);
+    for (let i = 1; i < sections.length; i += 2) {
+      const title = sections[i].toUpperCase().trim();
+      const content = sections[i + 1] || "";
+
+      if (/SUMMARY|PROFILE|OBJECTIVE/.test(title)) {
+        result.summary = strip(content);
+      } else if (/SKILL|COMPETENC/.test(title)) {
+        const cleaned = strip(content);
+        const items = [];
+        const junk = new Set(["document", "article", "center", "itemize", "enumerate"]);
+        cleaned.split("\n").forEach((line) => {
+          const parts = line.split(/[:\-]/);
+          const chunk = parts[parts.length - 1];
+          chunk.split(/[,•|;]+/).forEach((token) => {
+            const t = token.trim();
+            if (t && !junk.has(t.toLowerCase()) && !/^\d+pt$/.test(t) && t.length > 1) {
+              items.push(t);
+            }
+          });
+        });
+        result.skills = Array.from(new Set(items));
+      } else if (/EXPERIENCE|WORK|EMPLOYMENT|HISTORY/.test(title)) {
+        const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^{}\n]+\}\s*(?:\$\|\$|\||--|,|\bat\b|\\hfill|\\\\))/);
+        blocks.forEach((b) => {
+          if (!b.trim() || b.trim().startsWith("%")) return;
+          const rawItems = [...b.matchAll(/\\item\s+([\s\S]+?)(?=(?:\\item|\n\s*\\end|\Z|\$))/g)];
+          const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
+
+          let tc = b.match(/\\textbf\{([^}]+)\}\s*(?:\$\|\$|\||--|,|\bat\b|\\hfill)\s*\\textit\{([^}]+)\}(?:\s*\\hfill\s*(?:\\textit\{([^}]+)\}|([^\n\\]+)))?/);
+          if (!tc) {
+            tc = b.match(/\\textbf\{([^}]+)\}\s*(?:\\hfill\s*(?:\\textit\{([^}]+)\}|([^\n\\]+)))?\\\\\s*\\textit\{([^}]+)\}/);
+            if (tc) {
+              result.roles.push({
+                title: strip(tc[1]),
+                company: strip(tc[4]),
+                start: strip(tc[2] || tc[3] || ""),
+                highlights: itemMatches,
+              });
+              return;
+            }
+          }
+          if (tc) {
+            result.roles.push({
+              title: strip(tc[1]),
+              company: strip(tc[2]),
+              start: strip(tc[3] || tc[4] || ""),
+              highlights: itemMatches,
+            });
+          } else if (itemMatches.length > 0) {
+            const b_m = b.match(/\\textbf\{([^}]+)\}/);
+            const i_m = b.match(/\\textit\{([^}]+)\}/);
+            result.roles.push({
+              title: b_m ? strip(b_m[1]) : "Role",
+              company: i_m ? strip(i_m[1]) : "",
+              start: "",
+              highlights: itemMatches,
+            });
           }
         });
-      });
-      result.skills = Array.from(new Set(items));
-    } else if (/EXPERIENCE|WORK|EMPLOYMENT|HISTORY/.test(title)) {
-      const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*(?:\$\|\$|\|)\s*\\textit\{)/);
-      blocks.forEach((b) => {
-        if (!b.trim() || b.trim().startsWith("%")) return;
-        const tm = b.match(/\\textbf\{([^}]+)\}\s*(?:\$\|\$|\|)\s*\\textit\{([^}]+)\}(?:[^\\]*?\\hfill\s*([^\\]+))?/);
-        const itemMatches = [...b.matchAll(/\\item\s*([^\n\\]+)/g)].map((m) => strip(m[1])).filter(Boolean);
-        if (tm) {
-          result.roles.push({
-            title: strip(tm[1]),
-            company: strip(tm[2]),
-            start: strip(tm[3] || ""),
-            highlights: itemMatches,
-          });
-        }
-      });
-    } else if (/PROJECT/.test(title)) {
-      const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}(?:\$\|\$|\||\\\\))/);
-      blocks.forEach((b) => {
-        if (!b.trim() || b.trim().startsWith("%")) return;
-        const pm = b.match(/\\textbf\{([^}]+)\}/);
-        const itemMatches = [...b.matchAll(/\\item\s*([^\n\\]+)/g)].map((m) => strip(m[1])).filter(Boolean);
-        if (pm) {
-          result.projects.push({
-            name: strip(pm[1]),
-            description: itemMatches.join(" ") || strip(b),
-            highlights: itemMatches,
-          });
-        }
-      });
-    } else if (/EDUCATION/.test(title)) {
-      const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*\\hfill)/);
-      blocks.forEach((b) => {
-        if (!b.trim() || b.trim().startsWith("%")) return;
-        const im = b.match(/\\textbf\{([^}]+)\}(?:[^\\]*?\\hfill\s*([^\\]+))?/);
-        const dm = b.match(/\\textit\{([^}]+)\}/);
-        if (im) {
-          result.education.push({
-            institution: strip(im[1]),
-            year: strip(im[2] || ""),
-            degree: strip(dm ? dm[1] : ""),
-          });
-        }
-      });
-    } else if (/CERTIFICATION|ACHIEVEMENT/.test(title)) {
-      const itemMatches = [...content.matchAll(/\\item\s*([^\n\\]+)/g)].map((m) => strip(m[1])).filter(Boolean);
-      itemMatches.forEach((itm) => result.certifications.push({ name: itm }));
+      } else if (/PROJECT/.test(title)) {
+        const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}(?:\$\|\$|\||\\\\))/);
+        blocks.forEach((b) => {
+          if (!b.trim() || b.trim().startsWith("%")) return;
+          const pm = b.match(/\\textbf\{([^}]+)\}/);
+          const rawItems = [...b.matchAll(/\\item\s+([\s\S]+?)(?=(?:\\item|\n\s*\\end|\Z|\$))/g)];
+          const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
+          if (pm) {
+            result.projects.push({
+              name: strip(pm[1]),
+              description: itemMatches.join(" ") || strip(b),
+              highlights: itemMatches,
+            });
+          }
+        });
+      } else if (/EDUCATION/.test(title)) {
+        const blocks = content.split(/\\vspace\{[^}]*\}|(?=\\textbf\{[^}]+\}\s*(?:\\hfill|\\\\))/);
+        blocks.forEach((b) => {
+          if (!b.trim() || b.trim().startsWith("%")) return;
+          const im = b.match(/\\textbf\{([^}]+)\}(?:[^\\]*?\\hfill\s*(?:\\textit\{([^}]+)\}|([^\n\\]+)))?/);
+          const dm = b.match(/\\textit\{([^}]+)\}/);
+          if (im) {
+            let institution = strip(im[1]);
+            let year = strip(im[2] || im[3] || "");
+            let degree = strip(dm ? dm[1] : "");
+            if (/bachelor|master|b\.tech|m\.tech|b\.s\.|m\.s\.|ph\.d|mba|degree/i.test(institution)) {
+              const tmp = institution;
+              institution = degree;
+              degree = tmp;
+            }
+            result.education.push({
+              institution,
+              year,
+              degree,
+            });
+          }
+        });
+      } else if (/CERTIFICATION|ACHIEVEMENT/.test(title)) {
+        const rawItems = [...content.matchAll(/\\item\s+([\s\S]+?)(?=(?:\\item|\n\s*\\end|\Z|\$))/g)];
+        const itemMatches = rawItems.map((m) => strip(m[1])).filter(Boolean);
+        itemMatches.forEach((itm) => result.certifications.push({ name: itm }));
+      }
     }
-  }
 
-  return result;
+    return result;
+  } catch (err) {
+    console.warn("Client LaTeX parsing error:", err);
+    return null;
+  }
 }
 
 export default function ResumeStudio({ user, t, onUpdateUser }) {
@@ -147,7 +192,24 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
   const [input, setInput] = useState("");
   const [activeTab, setActiveTab] = useState("preview"); // 'preview' | 'latex'
   const [copied, setCopied] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
   const studioFileInputRef = useRef(null);
+
+  function showToast(msg) {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(""), 3200);
+  }
+
+  function formatBubbleContent(text) {
+    if (!text) return null;
+    const parts = text.split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={i}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  }
 
   const initialGreeting = useMemo(() => {
     if (ats?.improvements?.length) {
@@ -275,6 +337,8 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
         {
           role: "assistant",
           content: `Sorry, I encountered an error: ${e.message}. Please try again.`,
+          is_error: true,
+          failed_query: query,
         },
       ]);
     } finally {
@@ -294,8 +358,9 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
           resume: res.resume || user.resume,
         });
       }
+      showToast("✓ LaTeX saved and ATS score updated!");
     } catch (e) {
-      alert("Failed to save LaTeX: " + e.message);
+      showToast("Failed to save: " + e.message);
     } finally {
       setSaving(false);
     }
@@ -317,8 +382,9 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
           resume: res.resume,
         });
       }
+      showToast("✓ Resume PDF parsed and ATS score calculated!");
     } catch (err) {
-      alert("Upload failed: " + err.message);
+      showToast("Upload failed: " + err.message);
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -328,11 +394,17 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
   function copyToClipboard() {
     navigator.clipboard.writeText(latex);
     setCopied(true);
+    showToast("✓ LaTeX copied to clipboard");
     setTimeout(() => setCopied(false), 2200);
   }
 
   function downloadTex() {
-    const blob = new Blob([latex], { type: "text/x-tex;charset=utf-8" });
+    const content = (latex || "").trim();
+    if (!content) {
+      showToast("No LaTeX content to download.");
+      return;
+    }
+    const blob = new Blob([content], { type: "text/x-tex;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -341,6 +413,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    showToast("✓ Downloaded .tex resume");
   }
 
   const score = ats?.overall_score ?? 0;
@@ -349,6 +422,7 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
 
   return (
     <div className="studio-layout">
+      {toastMsg && <div className="studio-toast-banner animate-slide-down">{toastMsg}</div>}
       {/* LEFT COLUMN: ATS Score & AI Chat Coach */}
       <section className="studio-left">
         {/* ATS Score Overview Card */}
@@ -445,8 +519,18 @@ export default function ResumeStudio({ user, t, onUpdateUser }) {
 
           <div className="chat-messages">
             {messages.map((m, idx) => (
-              <div key={idx} className={`chat-bubble ${m.role}`}>
-                <p className="bubble-text">{m.content}</p>
+              <div key={idx} className={`chat-bubble ${m.role} ${m.is_error ? "error-bubble" : ""}`}>
+                <p className="bubble-text">{formatBubbleContent(m.content)}</p>
+                {m.is_error && m.failed_query && (
+                  <button
+                    type="button"
+                    className="retry-chat-btn"
+                    onClick={() => handleSend(m.failed_query)}
+                    disabled={chatting}
+                  >
+                    ↺ Try again
+                  </button>
+                )}
 
                 {/* Bullet list of changes made */}
                 {(m.changes_made || []).length > 0 && (

@@ -270,7 +270,22 @@ def why(uid: int, jid: int, s: Session = Depends(get_session)):
     try:
         extra = matching.explain(jd, r, mf, u.preferred_lang)
     except Exception:
-        extra = {"why": [], "gaps": [], "tip": "", "coach_error": "LLM unavailable. Start Ollama and retry."}
+        why_bullets = []
+        if mf.get("matched_skills"):
+            why_bullets.append(f"Strong overlap in core skills: {', '.join(mf['matched_skills'][:4])}.")
+        if mf.get("experience_fit", 0) >= 0.7:
+            why_bullets.append("Your career background aligns with the target experience range.")
+        if not why_bullets:
+            why_bullets.append("Profile matches the baseline functional requirements for this role.")
+
+        gaps = mf.get("missing_skills") or []
+        tip = f"Highlight your experience with {gaps[0]} or related workflows in your application note." if gaps else "Emphasize your proven impact and project achievements during discussions."
+        extra = {
+            "why": why_bullets,
+            "gaps": gaps[:3],
+            "tip": tip,
+            "coach_error": None,
+        }
     return {**mf, "role_fit": matching.role_fit(jd, r), **extra}
 
 
